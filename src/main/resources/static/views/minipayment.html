@@ -1,0 +1,39 @@
+<div layout="column">
+    <div layout-align="center center" layout-gt-sm="row">
+        <form name="serviceForm">
+            <md-input-container>
+                <label>Service Name</label>
+                <input ng-model="config.moduleName" name="sname" required/>
+                <div ng-messages="serviceForm.sname.$error">
+                    <div ng-message="required">Keep calm and enter service name.</div>
+                </div>
+            </md-input-container>
+            <md-input-container>
+                <label>Module Path</label>
+                <input ng-model="config.modulePath" name="path"/>
+                <div ng-messages="serviceForm.path.$error">
+                    <div ng-message="required">Module path required.</div>
+                </div>
+            </md-input-container>
+            <md-checkbox ng-model="config.tfw" aria-label="Checkbox 1">TFW</md-checkbox>
+            <md-button ng-click="prepare()" class="md-raised md-primary" ng-disabled="serviceForm.$invalid">Process</md-button>
+        </form>
+    </div>
+    <div layout-align="center center" layout-gt-sm="column">
+        <span><b>Module Path:</b> {{config.modulePath}}</span>
+        <span><b>Pegasus Path:</b> {{config.pegasus}}</span>
+    </div>
+    
+    <!--LIST FILES-->
+    <div layout-align="center center" layout-gt-sm="row">
+        <div class="loading-bar" ng-show="preparing">loading...</div>
+        <table class="files" cellspacing="0" ng-hide="preparing">
+            <tr ng-repeat="f in config.files">
+                <td><a ui-sref="view" class="view">{{f.path}}</a></td>
+                <!--<td class="file">/foundation-guiwar/src/main/java/pegasus/project/foundation/FoundationRemoteConfig.java</td>-->
+                <td class="{{f.color}}" align="center">{{f.status}}</td>
+            </tr>
+        </table>
+    </div>
+
+</div>
