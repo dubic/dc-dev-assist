@@ -5,6 +5,7 @@
  */
 angular.module('app', ['ngMaterial', 'ui.router','ngMessages'])
         .controller('ModuleCtrl',ModuleCtrl)
+        .controller('ViewFileCtrl',ViewFileCtrl)
         .config(function ($stateProvider, $urlRouterProvider) {
             $stateProvider
                     .state('dash', {
@@ -14,9 +15,10 @@ angular.module('app', ['ngMaterial', 'ui.router','ngMessages'])
                         url: "/minipayment",
                         templateUrl: "minipayment.html",
                         controller:'ModuleCtrl'
-                    }).state('megapayment', {
-                        url: "/megapayment",
-                        templateUrl: "megapayment.html"
+                    }).state('view', {
+                        url: "/view",
+                        templateUrl: "view-file.html",
+                        controller: 'ViewFileCtrl'
                     });
         })
         .run(function ($state) {

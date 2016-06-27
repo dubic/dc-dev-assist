@@ -10,7 +10,9 @@ function ModuleCtrl($scope, $http) {
         modulePath: '/media/sf_dublux/eclipse_workspace/module/minipayment',
         tfw: false,
         preparing: false,
-        files: []
+        files: [],
+        foundFiles:0,
+        notFoundFiles:0
     };
 
     $scope.prepare = function () {
@@ -23,14 +25,27 @@ function ModuleCtrl($scope, $http) {
                 if ($scope.config.files[i].found) {
                     $scope.config.files[i].status = 'found';
                     $scope.config.files[i].color = 'green';
+                    $scope.config.foundFiles++;      
                 } else {
                     $scope.config.files[i].status = 'not found';
                     $scope.config.files[i].color = 'red';
+                    $scope.config.notFoundFiles++;
                 }
-
             }
 
         });
     };
+    
+    $scope.viewFile = function(file){
+        
+    };
+    
+    $scope.processAll = function(){
+        
+    };
+}
+
+function ViewFileCtrl(){
+    
 }
 

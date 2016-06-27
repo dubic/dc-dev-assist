@@ -25,15 +25,23 @@
     </div>
     
     <!--LIST FILES-->
-    <div layout-align="center center" layout-gt-sm="row">
+    <div layout-align="center center" layout-gt-sm="column">
         <div class="loading-bar" ng-show="preparing">loading...</div>
         <table class="files" cellspacing="0" ng-hide="preparing">
             <tr ng-repeat="f in config.files">
-                <td><a ui-sref="view" class="view">{{f.path}}</a></td>
+                <td><a ng-click="viewFile(f)" class="view">{{f.name}}</a></td>
                 <!--<td class="file">/foundation-guiwar/src/main/java/pegasus/project/foundation/FoundationRemoteConfig.java</td>-->
                 <td class="{{f.color}}" align="center">{{f.status}}</td>
             </tr>
+            <tr>
+                <td colspan="3">
+                    <span style="margin-right: 10px">Total files : {{config.files.length}}</span>
+                    <span style="margin-right: 10px">Found files : {{config.foundFiles}}</span>
+                    <span style="margin-right: 10px">Not Found files : {{config.notFoundFiles}}</span>
+                </td>
+            </tr>
         </table>
+        <md-button ng-click="processAll()" class="md-raised md-warn" ng-disabled="config.files.length ===0">Run ALL</md-button>
     </div>
 
 </div>

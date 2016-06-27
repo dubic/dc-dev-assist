@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ModFile {
+    private String name;
     private String path;
     private boolean found;
 
@@ -39,6 +40,14 @@ public class ModFile {
 
     public void setFound(boolean found) {
         this.found = found;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
     
     
