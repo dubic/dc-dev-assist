@@ -7,11 +7,13 @@ package com.dubic.dc.dev.assist.services;
 
 import com.dubic.dc.dev.assist.dao.ModFile;
 import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.io.FileUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.springframework.stereotype.Service;
@@ -46,7 +48,7 @@ public class ModuleService {
         files.add(createModFile(peg,"/foundation-guiwar/src/main/java/pegasus/project/foundation/FoundationRemoteConfig.java", lname));
         files.add(createModFile(peg,"/foundation-guiwar/src/main/resources/js/foundation/index.js", lname));
         files.add(createModFile(peg,"/netbanksrv-core/src/main/java/pegasus/project/netbanksrv/NetBankSrvDSDBConfig.java", lname));
-        files.add(createModFile(p,"/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/${servicename}Controller.java", sname));
+        files.add(createModFile(p,"/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/controller/${servicename}Controller.java", sname));
         files.add(createModFile(p,"/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/dao/${servicename}DaoImpl.java", sname));
         files.add(createModFile(p,"/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/service/${servicename}ServiceImpl.java", sname));
         files.add(createModFile(p,"/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/facade/${servicename}FacadeImpl.java", sname));
@@ -102,6 +104,10 @@ public class ModuleService {
 
     private String ev(Map m, String key) {
        return m.get(key) ==null? "":m.get(key).toString();
+    }
+
+    public String getFile(String path) throws IOException {
+        return FileUtils.readFileToString(new File(path));
     }
 
 }

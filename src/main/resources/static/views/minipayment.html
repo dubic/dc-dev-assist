@@ -8,7 +8,7 @@
                     <div ng-message="required">Keep calm and enter service name.</div>
                 </div>
             </md-input-container>
-            <md-input-container>
+            <md-input-container flex>
                 <label>Module Path</label>
                 <input ng-model="config.modulePath" name="path"/>
                 <div ng-messages="serviceForm.path.$error">
@@ -29,11 +29,11 @@
         <div class="loading-bar" ng-show="preparing">loading...</div>
         <table class="files" cellspacing="0" ng-hide="preparing">
             <tr ng-repeat="f in config.files">
-                <td><a ng-click="viewFile(f)" class="view">{{f.name}}</a></td>
+                <td><a ui-sref="view({file:f.path})" class="view">{{f.name}}</a></td>
                 <!--<td class="file">/foundation-guiwar/src/main/java/pegasus/project/foundation/FoundationRemoteConfig.java</td>-->
                 <td class="{{f.color}}" align="center">{{f.status}}</td>
             </tr>
-            <tr>
+            <tr ng-hide="config.pristine">
                 <td colspan="3">
                     <span style="margin-right: 10px">Total files : {{config.files.length}}</span>
                     <span style="margin-right: 10px">Found files : {{config.foundFiles}}</span>
