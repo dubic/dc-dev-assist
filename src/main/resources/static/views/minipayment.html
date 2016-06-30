@@ -38,10 +38,11 @@
                     <span style="margin-right: 10px">Total files : {{config.files.length}}</span>
                     <span style="margin-right: 10px">Found files : {{config.foundFiles}}</span>
                     <span style="margin-right: 10px">Not Found files : {{config.notFoundFiles}}</span>
+                    <span style="margin-right: 10px">Processed files : {{config.processedFiles}}</span>
                 </td>
             </tr>
         </table>
-        <md-button ng-click="processAll()" class="md-raised md-warn" ng-disabled="config.files.length ===0">Run ALL</md-button>
+        <md-button ng-click="processAll()" class="md-raised md-warn" ng-disabled="config.files.length ===0 && processing">Run ALL</md-button>
     </div>
 
 </div>

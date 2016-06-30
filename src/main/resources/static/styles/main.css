@@ -68,6 +68,9 @@ table.files td{
 .green{
     color: #329823;
 }
+.blue{
+    color: blue;
+}
 table.files a.view{
     color: #4183C4 !important;
     text-decoration: underline !important;

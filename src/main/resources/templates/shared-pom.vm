@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>pegasus.framework.mdk</groupId>
+		<artifactId>parentpom</artifactId>
+		<version>26</version>
+	</parent>
+	<groupId>pegasus.module.${servicename.toLowerCase()}</groupId>
+	<artifactId>${servicename.toLowerCase()}-shared</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	
+	<properties>
+                #if($tfw)
+		<extdep.version>20</extdep.version>
+                <pegasus-typebase.version>1.22.0-SNAPSHOT</pegasus-typebase.version>
+                <storeandforward-shared.version>1.6.0</storeandforward-shared.version>
+		<storeandforward-client-common.version>3.2.0</storeandforward-client-common.version>
+		<storeandforward-spi.version>3.2.0</storeandforward-spi.version>
+		<customer-shared.version>3.3.0EQU</customer-shared.version>
+                #else
+                <extdep.version>25.1EQU</extdep.version>
+                <pegasus-typebase.version>1.23.1EQU</pegasus-typebase.version>
+                #end
+                <pegasus-core.version>1.29.0</pegasus-core.version>
+		
+	</properties>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>pegasus.framework.mdk</groupId>
+				<artifactId>extdep</artifactId>
+				<version>${extdep.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+                        <dependency>
+				<groupId>pegasus.framework.pdk.pegasus</groupId>
+				<artifactId>pegasus-core</artifactId>
+				<version>${pegasus-core.version}</version>
+			</dependency>
+                        #if($tfw)
+                        <dependency>
+				<groupId>pegasus.module.storeandforward</groupId>
+				<artifactId>storeandforward-shared</artifactId>
+				<version>${storeandforward-shared.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>pegasus.module.storeandforward</groupId>
+				<artifactId>storeandforward-client-common</artifactId>
+				<version>${storeandforward-client-common.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>pegasus.module.storeandforward</groupId>
+				<artifactId>storeandforward-spi</artifactId>
+				<version>${storeandforward-spi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>pegasus.module.customer</groupId>
+				<artifactId>customer-shared</artifactId>
+				<version>${customer-shared.version}</version>
+			</dependency>
+                        #end
+		</dependencies>
+	</dependencyManagement>
+	
+	<dependencies>
+		<dependency>
+			<groupId>pegasus.framework.pdk.pegasus</groupId>
+			<artifactId>pegasus-typebase</artifactId>
+			<version>${pegasus-typebase.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>pegasus.framework.pdk.pegasus</groupId>
+			<artifactId>pegasus-core</artifactId>
+		</dependency>
+                #if($tfw)
+		<dependency>
+			<groupId>pegasus.module.storeandforward</groupId>
+			<artifactId>storeandforward-shared</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>pegasus.module.storeandforward</groupId>
+			<artifactId>storeandforward-client-common</artifactId>
+			<version>${storeandforward-client-common.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>pegasus.module.storeandforward</groupId>
+			<artifactId>storeandforward-spi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>pegasus.module.customer</groupId>
+			<artifactId>customer-shared</artifactId>
+			<version>${customer-shared.version}</version>
+		</dependency>
+                #end
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>pegasus.framework.mdk.plugin</groupId>
+				<artifactId>typegen-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>

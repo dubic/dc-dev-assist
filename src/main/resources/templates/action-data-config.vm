@@ -1,0 +1,4 @@
+ 	<Action>
+ 		<Id>${servicename.toLowerCase()}/start</Id>
+ 		<Text>pegasus.internetbank.menu:${servicename}Start</Text>
+ 	</Action>

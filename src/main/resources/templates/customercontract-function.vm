@@ -1,0 +1,28 @@
+#if($tfw)
+--${servicename}
+insert into PCC_FUNCTIONACTIVITY (FUNCTION, ACTIVITY) values ('${servicename.toLowerCase()}', 'view');
+insert into PCC_FUNCTIONACTIVITY (FUNCTION, ACTIVITY) values ('${servicename.toLowerCase()}', 'sign');
+insert into PCC_FUNCTIONACTIVITY (FUNCTION, ACTIVITY) values ('${servicename.toLowerCase()}', 'manage');
+insert into PCC_FUNCTIONACTIVITY (FUNCTION, ACTIVITY) values ('${servicename.toLowerCase()}', 'process');
+
+--insert into PCC_FUNCTIONOPERATIONACTIVITY (FUNCTION, OPERATION, ACTIVITY) values ('${servicename.toLowerCase()}', 'create'  , 'view');
+insert into PCC_FUNCTIONOPERATIONACTIVITY (FUNCTION, OPERATION, ACTIVITY) values ('${servicename.toLowerCase()}', 'view'  , 'view');
+insert into PCC_FUNCTIONOPERATIONACTIVITY (FUNCTION, OPERATION, ACTIVITY) values ('${servicename.toLowerCase()}', 'create'  , 'manage');
+insert into PCC_FUNCTIONOPERATIONACTIVITY (FUNCTION, OPERATION, ACTIVITY) values ('${servicename.toLowerCase()}', 'storedraft'  , 'manage');
+insert into PCC_FUNCTIONOPERATIONACTIVITY (FUNCTION, OPERATION, ACTIVITY) values ('${servicename.toLowerCase()}', 'sign'  , 'sign');
+insert into PCC_FUNCTIONOPERATIONACTIVITY (FUNCTION, OPERATION, ACTIVITY) values ('${servicename.toLowerCase()}', 'book'  , 'process');
+insert into PCC_FUNCTIONOPERATIONACTIVITY (FUNCTION, OPERATION, ACTIVITY) values ('${servicename.toLowerCase()}', 'modify'  , 'manage');
+insert into PCC_FUNCTIONOPERATIONACTIVITY (FUNCTION, OPERATION, ACTIVITY) values ('${servicename.toLowerCase()}', 'decline'  , 'sign');
+insert into PCC_FUNCTIONOPERATIONACTIVITY (FUNCTION, OPERATION, ACTIVITY) values ('${servicename.toLowerCase()}', 'process'  , 'process');
+insert into PCC_FUNCTIONOPERATIONACTIVITY (FUNCTION, OPERATION, ACTIVITY) values ('${servicename.toLowerCase()}', 'cancel'  , 'manage');
+insert into PCC_FUNCTIONOPERATIONACTIVITY (FUNCTION, OPERATION, ACTIVITY) values ('${servicename.toLowerCase()}', 'canceldraft'  , 'view');
+#else
+--${servicename}
+insert into PCC_FUNCTIONACTIVITY (FUNCTION, ACTIVITY) values ('${servicename.toLowerCase()}', 'view');
+insert into PCC_FUNCTIONACTIVITY (FUNCTION, ACTIVITY) values ('${servicename.toLowerCase()}', 'sign');
+insert into PCC_FUNCTIONACTIVITY (FUNCTION, ACTIVITY) values ('${servicename.toLowerCase()}', 'manage');
+ 
+insert into PCC_FUNCTIONOPERATIONACTIVITY (FUNCTION, OPERATION, ACTIVITY) values ('${servicename.toLowerCase()}', 'start'  , 'view');
+insert into PCC_FUNCTIONOPERATIONACTIVITY (FUNCTION, OPERATION, ACTIVITY) values ('${servicename.toLowerCase()}', 'submit'  , 'sign');
+insert into PCC_FUNCTIONOPERATIONACTIVITY (FUNCTION, OPERATION, ACTIVITY) values ('${servicename.toLowerCase()}', 'enqueue'  , 'manage');
+#end

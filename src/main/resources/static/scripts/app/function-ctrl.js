@@ -3,10 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-function ModuleCtrl($scope, $http, $mdDialog,filesCache) {
+function ModuleCtrl($scope, $http, $mdDialog, filesCache, $q) {
     console.log(filesCache.get('config'));
-    
-    
     $scope.config = filesCache.get('config') || {
         pegasus: '/media/sf_dublux/eclipse_workspace/pegasus-bundle',
         modulePath: '/media/sf_dublux/eclipse_workspace/module/minipayment',
@@ -15,16 +13,16 @@ function ModuleCtrl($scope, $http, $mdDialog,filesCache) {
         files: [],
         foundFiles: 0,
         notFoundFiles: 0,
+        processedFiles: 0,
         pristine: true
     };
-    
-
     $scope.prepare = function () {
         $scope.config.preparing = true;
+        $scope.config.foundFiles = 0;
+        $scope.config.notFoundFiles = 0;
         $http.post('/module/' + $scope.config.moduleName + '/prepare', $scope.config).success(function (files) {
             $scope.config.preparing = false;
             $scope.config.pristine = false;
-
             $scope.config.files = files;
             for (var i = 0; i < $scope.config.files.length; i++) {
                 if ($scope.config.files[i].found) {
@@ -37,12 +35,9 @@ function ModuleCtrl($scope, $http, $mdDialog,filesCache) {
                     $scope.config.notFoundFiles++;
                 }
             }
-            filesCache.put('config',$scope.config);
+            filesCache.put('config', $scope.config);
         });
     };
-
-   
-
     $scope.processAll = function (ev) {
         var confirm = $mdDialog.confirm()
                 .title('Would you like to continue?')
@@ -57,9 +52,67 @@ function ModuleCtrl($scope, $http, $mdDialog,filesCache) {
 
         });
     };
-
     function runChanges() {
+        $scope.filesDone = true;
+//        $scope.processing = true;
+        $scope.config.processedFiles = 0;
+//        for (var i = 0; i < $scope.config.files.length; i++) {
+//            process($scope.config.files[i]);
+//        }
+//        $scope.processing = false;
+        var indices = [];
+        for (var i = 0; i < $scope.config.files.length; i++) {
+            $scope.config.files[i].status = 'waiting';
+            $scope.config.files[i].status = 'color';
+            indices.push(i);
+        }
+        console.log('running all');
+        process(indices);
+    }
 
+//    function process(file) {
+//        file.status = 'processing';
+//        file.color = 'blue';
+//        $scope.filesDone = false;
+//        $http.post('/module/' + $scope.config.moduleName + '/file/process?tfw=' + $scope.config.tfw, file)
+//                .success(function (result) {
+//                    file.status = result.status;
+//                    if (result.status !== 'error') {
+//                        file.color = 'green';
+//                        $scope.config.processedFiles++;
+//                    } else {
+//                        file.color = 'red';
+//                    }
+//                    $scope.filesDone = true;
+//                });
+//    }
+
+    function process(indices) {
+        var index = indices.shift();
+        if (angular.isUndefined(index))
+            return;
+        var file = $scope.config.files[index];
+        
+        file.status = 'processing';
+        file.color = 'blue';
+        var req = {
+            method: 'POST',
+            url: '/module/' + $scope.config.moduleName + '/file/process?tfw=' + $scope.config.tfw,
+            data: file
+        };
+
+        $http(req).then(function (result) {
+            file.status = result.data.status;
+            if (result.data.status !== 'error') {
+                file.color = 'green';
+                $scope.config.processedFiles++;
+            } else {
+                file.color = 'red';
+            }
+            process(indices);
+        }, function () {
+            console.log('error occurred');
+        });
     }
 }
 
@@ -70,6 +123,5 @@ function ViewFileCtrl($scope, $http, FileMap, $timeout) {
 
         prettyPrint();
     }, 500);
-
 }
 
