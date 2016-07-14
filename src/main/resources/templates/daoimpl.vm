@@ -1,0 +1,64 @@
+package pegasus.module.${servicename.toLowerCase()}.dao;
+
+import java.math.BigDecimal;
+import java.util.Calendar;
+
+import org.springframework.stereotype.Repository;
+
+import pegasus.component.auditlog.annotation.AuditLog;
+import pegasus.component.auditlog.attribute.label.BackendQueryAuditLogLabel;
+import pegasus.component.auditlog.attribute.label.BackendUpdateAuditLogLabel;
+import pegasus.module.${servicename.toLowerCase()}.dao.mapper.${servicename}Mapper;
+
+/**
+ * DAO implementation for the ${servicename.toLowerCase()} module.
+ * @author mozes
+ */
+@Repository
+public class ${servicename}DaoImpl implements ${servicename}Dao
+{
+	//	@Autowired
+	private ${servicename}Mapper ${servicename.toLowerCase()}Mapper;
+
+	public ${servicename}DaoImpl(${servicename}Mapper ${servicename.toLowerCase()}Mapper)
+	{
+		if (${servicename.toLowerCase()}Mapper == null)
+		{
+			throw new IllegalArgumentException(${servicename}DaoImpl.class.getName() + " requires a valid " + ${servicename}Mapper.class.getName() + " to be constructor-injected.");
+		}
+		else
+		{
+			this.${servicename.toLowerCase()}Mapper = ${servicename.toLowerCase()}Mapper;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	// @AuditLog(label = BackendQueryAuditLogLabel.class)
+	// @Override
+	// public BigDecimal getNonRegThreshold(Calendar date)
+	// {
+	// 	// TODO Auto-generated method stub
+	// 	return ${servicename.toLowerCase()}Mapper.getThreshold(date);
+	// }
+
+	// @AuditLog(label = BackendUpdateAuditLogLabel.class)
+	// @Override
+	// public void store${servicename}(Integer generatedPaymentID, String fromAccount, long registeredPartnerID, String nonRegisteredPartnerName, BigDecimal amount, String narrative)
+	// {
+	// 	System.out.println("Called store${servicename} ... ");
+	// 	// TODO Auto-generated method stub
+	// 	${servicename.toLowerCase()}Mapper.store${servicename}(generatedPaymentID, fromAccount, registeredPartnerID, nonRegisteredPartnerName, amount, narrative);
+	// }
+
+	// @AuditLog(label = BackendQueryAuditLogLabel.class)
+	// @Override
+	// public Integer getNextPaymentID()
+	// {
+	// 	// TODO Auto-generated method stub
+	// 	Integer next = ${servicename.toLowerCase()}Mapper.getNextSequence();
+	// 	System.out.println("Next Integer is : " + next);
+	// 	return next;
+	// }
+}

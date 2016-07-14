@@ -23,15 +23,20 @@
         <span><b>Module Path:</b> {{config.modulePath}}</span>
         <span><b>Pegasus Path:</b> {{config.pegasus}}</span>
     </div>
-    
+
     <!--LIST FILES-->
     <div layout-align="center center" layout-gt-sm="column">
         <div class="loading-bar" ng-show="preparing">loading...</div>
         <table class="files" cellspacing="0" ng-hide="preparing">
+
             <tr ng-repeat="f in config.files">
+                <td align="center">
+                    <input type="checkbox" ng-model="f.process"/>
+                </td>
                 <td><a ui-sref="view({file:f.path})" class="view">{{f.name}}</a></td>
                 <!--<td class="file">/foundation-guiwar/src/main/java/pegasus/project/foundation/FoundationRemoteConfig.java</td>-->
                 <td class="{{f.color}}" align="center">{{f.status}}</td>
+                
             </tr>
             <tr ng-hide="config.pristine">
                 <td colspan="3">
@@ -42,7 +47,7 @@
                 </td>
             </tr>
         </table>
-        <md-button ng-click="processAll()" class="md-raised md-warn" ng-disabled="config.files.length ===0 && processing">Run ALL</md-button>
+        <md-button ng-click="processAll()" class="md-raised md-warn" ng-disabled="config.files.length === 0 && processing">Run ALL</md-button>
     </div>
 
 </div>

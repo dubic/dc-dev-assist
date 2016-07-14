@@ -1,0 +1,79 @@
+package pegasus.module.${servicename.toLowerCase()}.config.internal;
+
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import pegasus.framework.remote.PegasusRemoteClientInterceptor;
+import pegasus.framework.remote.PegasusRemoteFactory;
+import pegasus.framework.remote.config.PegasusRemoteConfigurer;
+import pegasus.module.${servicename.toLowerCase()}.facade.${servicename}Facade;
+
+@Configuration
+public class ${servicename}RemoteConfiguration implements ApplicationContextAware
+{
+	/**
+	 * The ApplicationContext must be injected by Spring but (as with any other type of beans)
+	 * no @Autowiring is allowed.
+	 */
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
+	{
+		this.applicationContext = applicationContext;
+	}
+
+	protected ApplicationContext applicationContext;
+
+	/**
+	 * This method is the new BlackBox-styled alternative to the below legacy code:
+	 * 
+	 * 
+	 * public class FoundationRemoteConfig
+	 * 	{
+	 * 
+	 * 	@Bean
+	 * 	public static PegasusRemoteProxyRegister netbanksrvRemoteProxyRegister(@Qualifier("NetbankSrvURL") String netbankSrvURL)
+	 * 	{
+	 * 		// START SNIPPET: PegasusRemoteProxyRegister	
+	 * 		final PegasusRemoteProxyRegister netBankSrvRegister = new PegasusRemoteProxyRegister("netBankSrvRemoteTemplate");
+	 * 		// END SNIPPET: PegasusRemoteProxyRegister	
+	 * 		if (netbankSrvURL != null && !netbankSrvURL.equals("-"))
+	 * 		{
+	 * 			netBankSrvRegister.setRemoteUrl(netbankSrvURL);
+	 * 		}
+	 * 
+	 * 		// FUNCTIONS
+	 * 
+	 * 	netBankSrvRegister.addInterface(${servicename}Facade.class);
+	 * 
+	 * 
+	 * 
+	 * 
+	 * The new BlackBox-concept dictates a new configuration style instead:
+	 * @Enable${servicename}FunctionsRemote
+	 * public class FoundationRemoteConfig {
+	 * ...
+	 *   // netBankSrvRegister.addInterface(${servicename}Facade.class); // this syntax is now obsolete. YOu have to conform with the @EnableXXX pattern.
+	 * }
+	 * 
+	 * 
+	 * Note: the default remoting mode is specified at 
+	 * remote-context.xml : FoundationGUI.war
+	 *
+	 * 		<bean name="PegasusRemoteConfigurer.DEFAULT_REMOTE_CLIENT_INTERCEPTOR"
+	 * 			class="pegasus.framework.remote.http.PegasusHttpInvokerClientInterceptor">
+	 * 						
+	 * 		<property name="serviceUrl"
+	 * 			value="http://localhost:9180/netbanksrv-war/remoting/PEGASUS_SERVICES" />
+	 * 		</bean>
+	 * 
+	 * @return remote proxy wrapping methods of ${servicename}Facade. Will be called from FoundationGUI.war
+	 */
+	@Bean
+	public ${servicename}Facade get${servicename}Facade()
+	{
+		return PegasusRemoteFactory.getProxy(${servicename}Facade.class, applicationContext.getBean(PegasusRemoteConfigurer.DEFAULT_REMOTE_CLIENT_INTERCEPTOR, PegasusRemoteClientInterceptor.class));
+	}
+}

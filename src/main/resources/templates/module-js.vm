@@ -1,0 +1,19 @@
+angular.module('pegasus.module.${servicename.toLowerCase()}', [])
+	.service('${servicename}Service', Pegasus.module.${servicename.toLowerCase()}.${servicename}Service)
+	.controller('${servicename}.SearchCtrl', Pegasus.module.${servicename.toLowerCase()}.SearchCtrl)
+	
+	.config(['$stateProvider', function($stateProvider) {
+		var fooPreload = ['${servicename}Service', function(${servicename}Service) {
+			return ${servicename}Service.getFoo();
+		}];
+		
+		$stateProvider
+			.state('ib.${servicename.toLowerCase()}', {
+				url: '/${servicename.toLowerCase()}/start/start',
+				templateUrl: 'js/pegasus/module/${servicename.toLowerCase()}/Search.html',
+				controller: '${servicename}.SearchCtrl',
+				resolve: {
+					foo: fooPreload
+				}
+			});
+	}]);

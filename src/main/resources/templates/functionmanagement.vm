@@ -1,0 +1,26 @@
+#if($tfw)
+-- <${servicename}>
+INSERT INTO FUN_FUNCTION (FUNCTIONID) VALUES ('${servicename.toLowerCase()}');
+
+insert into FUN_FUNCTIONOPERATION (FUNCTIONID, OPERATION, STARTABLE) values ('${servicename.toLowerCase()}', 'view','N');
+insert into FUN_FUNCTIONOPERATION (FUNCTIONID, OPERATION, STARTABLE) values ('${servicename.toLowerCase()}', 'book','N');
+insert into FUN_FUNCTIONOPERATION (FUNCTIONID, OPERATION, STARTABLE) values ('${servicename.toLowerCase()}', 'cancel','N');
+insert into FUN_FUNCTIONOPERATION (FUNCTIONID, OPERATION, STARTABLE) values ('${servicename.toLowerCase()}', 'canceldraft','N');
+insert into FUN_FUNCTIONOPERATION (FUNCTIONID, OPERATION, STARTABLE) values ('${servicename.toLowerCase()}', 'create','N');
+insert into FUN_FUNCTIONOPERATION (FUNCTIONID, OPERATION, STARTABLE) values ('${servicename.toLowerCase()}', 'decline','N');
+insert into FUN_FUNCTIONOPERATION (FUNCTIONID, OPERATION, STARTABLE) values ('${servicename.toLowerCase()}', 'modify','N');
+insert into FUN_FUNCTIONOPERATION (FUNCTIONID, OPERATION, STARTABLE) values ('${servicename.toLowerCase()}', 'process','N');
+insert into FUN_FUNCTIONOPERATION (FUNCTIONID, OPERATION, STARTABLE) values ('${servicename.toLowerCase()}', 'sign','N');
+insert into FUN_FUNCTIONOPERATION (FUNCTIONID, OPERATION, STARTABLE) values ('${servicename.toLowerCase()}', 'storedraft','N');
+
+INSERT INTO FUN_FUNCTIONCHANNEL (FUNCTIONID,CHANNELID) VALUES ('${servicename.toLowerCase()}','IBN');
+-- </${servicename}>
+#else
+-- <${servicename}>
+INSERT INTO FUN_FUNCTION (FUNCTIONID) VALUES ('${servicename.toLowerCase()}');
+INSERT INTO FUN_FUNCTIONOPERATION (FUNCTIONID,OPERATION,STARTABLE) VALUES ('${servicename.toLowerCase()}','start',  'Y');
+INSERT INTO FUN_FUNCTIONOPERATION (FUNCTIONID,OPERATION,STARTABLE) VALUES ('${servicename.toLowerCase()}','submit', 'N');
+INSERT INTO FUN_FUNCTIONOPERATION (FUNCTIONID,OPERATION,STARTABLE) VALUES ('${servicename.toLowerCase()}','enqueue','N');
+INSERT INTO FUN_FUNCTIONCHANNEL (FUNCTIONID,CHANNELID) VALUES ('${servicename.toLowerCase()}','IBN');
+-- </${servicename}>
+#end

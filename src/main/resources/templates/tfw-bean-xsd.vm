@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ 	xmlns:typegen="http://pegasus/framework/typegen" xmlns="http://pegasus/module/${servicename.toLowerCase()}/tfw/bean"
+ 	targetNamespace="http://pegasus/module/${servicename.toLowerCase()}/tfw/bean"
+ 	xmlns:typebase="http://pegasus/framework/typebase/bean" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+ 	jaxb:extensionBindingPrefixes="typegen"
+ 	xmlns:storeandforward="http://pegasus/component/storeandforward/bean"
+       xmlns:product="http://pegasus/component/customer/productinstance/bean">
+ 
+ 	<xsd:import namespace="http://pegasus/component/storeandforward/bean"
+ 		schemaLocation="xsdcat:pegasus.module.storeandforward:storeandforward-shared/META-INF/types/pegasus.component.storeandforward.bean.xsd" />
+ 
+       <xsd:import namespace="http://pegasus/component/customer/productinstance/bean" 
+       schemaLocation="xsdcat:pegasus.module.customer:customer-shared/META-INF/types/pegasus.component.customer.productinstance.bean.xsd"/>
+ 
+   
+ 	<!-- <xsd:annotation> -->
+ 	<!-- <xsd:appinfo> -->
+ 	<!-- <typegen:fluent /> -->
+ 	<!-- </xsd:appinfo> -->
+ 	<!-- </xsd:annotation> -->
+ 
+ 
+ 	<!-- "The Big-Three": those 3 mandatory TFW types: -->
+ 
+ 	<!-- "Payload" of the actual TFW function ("command"). Usually sent to the 
+ 		backend system in case of payments for example -->
+ 	<xsd:complexType name="${servicename.toLowerCase()}TFWTransactionRequest">
+ 		<xsd:complexContent>
+ 			<xsd:extension base="storeandforward:transactionRequest">
+ 				<xsd:sequence>
+                                    <!--
+                                        <xsd:element name="SourceAccount" type="product:productInstanceId" />
+ 					<xsd:element name="BeneName" type="xsd:string" />
+ 					<xsd:element name="Amount" type="xsd:decimal" />
+ 					<xsd:element name="BeneficiaryPhone" type="xsd:string" nillable="true"/>
+                                        -->
+ 				</xsd:sequence>
+ 			</xsd:extension>
+ 		</xsd:complexContent>
+ 	</xsd:complexType>
+ 
+ 	<!-- Result, feedback of the Forecast operation -->
+ 	<xsd:complexType name="${servicename.toLowerCase()}TFWForecastReply">
+ 		<xsd:complexContent>
+ 			<xsd:extension base="storeandforward:transactionForecast">
+ 				<xsd:sequence>
+                                <!--
+                                    <xsd:element name="Fee" type="xsd:decimal" minOccurs="1" maxOccurs="1"></xsd:element>
+                                -->
+ 				</xsd:sequence>
+ 			</xsd:extension>
+ 		</xsd:complexContent>
+ 	</xsd:complexType>
+ 
+ 	<!-- Outcome of the TFW "command" that has been executed -->
+ 	<xsd:complexType name="${servicename.toLowerCase()}TFWTransactionReply">
+ 		<xsd:complexContent>
+ 			<xsd:extension base="storeandforward:transactionReply">
+ 				<xsd:sequence>
+                                    <!--
+ 					<xsd:element name="TransactionID" type="xsd:unsignedLong" minOccurs="1" maxOccurs="1"></xsd:element>
+ 					<xsd:element name="Code" type="xsd:string"></xsd:element>
+ 					<xsd:element name="Pin" type="xsd:string"></xsd:element>
+                                    -->
+ 				</xsd:sequence>
+ 			</xsd:extension>
+ 		</xsd:complexContent>
+ 	</xsd:complexType>
+ 
+ </xsd:schema>

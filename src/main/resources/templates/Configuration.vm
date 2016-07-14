@@ -1,0 +1,128 @@
+package pegasus.module.${servicename.toLowerCase()}.config.internal;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import pegasus.framework.persistence.config.internal.PersistenceConfigurationHelper;
+import pegasus.framework.persistence.spring.PegasusSqlSessionTemplate;
+import pegasus.module.${servicename.toLowerCase()}.api.${servicename}Service;
+import pegasus.module.${servicename.toLowerCase()}.config.${servicename}Configurer;
+import pegasus.module.${servicename.toLowerCase()}.config.${servicename}ConfigurerAdapter;
+import pegasus.module.${servicename.toLowerCase()}.dao.${servicename}Dao;
+import pegasus.module.${servicename.toLowerCase()}.dao.${servicename}DaoImpl;
+import pegasus.module.${servicename.toLowerCase()}.dao.mapper.${servicename}Mapper;
+import pegasus.module.${servicename.toLowerCase()}.facade.${servicename}Facade;
+import pegasus.module.${servicename.toLowerCase()}.facade.${servicename}FacadeImpl;
+import pegasus.module.${servicename.toLowerCase()}.service.${servicename}ServiceImpl;
+
+@Configuration
+public class ${servicename}Configuration implements ApplicationContextAware
+{
+	/**
+	 * This is the "key" to the @EnableXXX driven Spring configuration model.
+	 * 
+	 * The "default" value (adapter) is there to say "no overrides are used by default" but the PS project
+	 * can provide an alternate @Bean which will override the default "Use BlackBox defaults" behaviour
+	 * when autowired here.
+	 * 
+	 * The autowired customization @Bean (if exists) will "replace" the factory-default behaviour and the custom values/behaviour
+	 * will take precedence over the default BlacBoxed factory default one.
+	 */
+	@Autowired(required = false)
+	protected ${servicename}Configurer configurer = new ${servicename}ConfigurerAdapter();
+
+	private ApplicationContext applicationContext;
+
+	/**
+	 * For MyBatis mapper setup, you'll need these
+	 */
+	private PegasusSqlSessionTemplate sqlSessionTemplate;
+
+	//	private BatchSqlSessionTemplate batchSqlSessionTemplate;
+	//	private PegasusSqlSessionTemplate nonXASqlSessionTemplate;
+
+	@Bean
+	public ${servicename}Dao get${servicename}Dao()
+	{
+		return new ${servicename}DaoImpl(get${servicename}Mapper());
+	}
+
+	@Bean
+	public ${servicename}Service get${servicename}Service()
+	{
+		return configurer.getAlternative${servicename}Service() == null ? new ${servicename}ServiceImpl(get${servicename}Dao()) : configurer.getAlternative${servicename}Service();
+	}
+
+	@Bean
+	public ${servicename}Facade get${servicename}Facade()
+	{
+		//Spring will make sure that the right bean references (from the same module only!) are injected into the constructor 
+		return new ${servicename}FacadeImpl(get${servicename}Service());
+	}
+
+	/**
+	 * Registering our ${servicename} MyBatis mapper on the standard (non batch-capable) SqlSessionTemplate
+	 * @return
+	 */
+	@Bean
+	protected ${servicename}Mapper get${servicename}Mapper()
+	{
+		return getSqlSessionTemplate().getMapper(${servicename}Mapper.class);
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
+	{
+		this.applicationContext = applicationContext;
+	}
+
+	private PegasusSqlSessionTemplate getSqlSessionTemplate()
+	{
+		if (sqlSessionTemplate == null)
+		{
+			sqlSessionTemplate = PersistenceConfigurationHelper.getSqlSessionTemplate(applicationContext, configurer.getSqlSessionFactory());
+		}
+		return sqlSessionTemplate;
+	}
+
+	//	/**
+	//	 * For illustration purposes only.
+	//	 * 
+	//	 * Batch template is needed for services where Batch-JDBC operations are used by MyBatis mappers.
+	//	 * With the ${servicename} we won't go that far :)
+	//	 *  
+	//	 * @return batch template that can be used by MyBati mappers replying on JDBC-batch capabilities 
+	//	 */
+	//	@SuppressWarnings("unused")
+	//	private BatchSqlSessionTemplate getBatchSqlSessionTemplate()
+	//	{
+	//		if (batchSqlSessionTemplate == null)
+	//		{
+	//			batchSqlSessionTemplate = PersistenceConfigurationHelper.getBatchSqlSessionTemplate(applicationContext, configurer.getSqlSessionFactory());
+	//		}
+	//		return batchSqlSessionTemplate;
+	//	}
+	//
+	//	/**
+	//	 * For illustration purposes only.
+	//	 * 
+	//	 * This SQL Session template is backed by a non-XA capable datasource.
+	//	 * 
+	//	 * Use this for stored procedures with inline "commit" statements.
+	//	 *  
+	//	 * @return non XA capable SqlSessionTemplate  
+	//	 */
+	//	@SuppressWarnings("unused")
+	//	private PegasusSqlSessionTemplate getNonXASqlSessionTemplate()
+	//	{
+	//		if (nonXASqlSessionTemplate == null)
+	//		{
+	//			nonXASqlSessionTemplate = PersistenceConfigurationHelper.getNonXASqlSessionTemplate(applicationContext, configurer.getSqlSessionFactory());
+	//		}
+	//		return nonXASqlSessionTemplate;
+	//	}
+}

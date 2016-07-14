@@ -1,0 +1,20 @@
+<div class="pg-function-panel" pg-add-load-mask="showLoadMask">
+    <form pg-tfw-panel pg-tfw-foundation-handler pg-tfw-init-options="megaPaymentCtrl.initOptions" name="${servicename.toLowerCase()}Form">
+
+        <pg-tfw-input tfw-init-form="megaPaymentCtrl.initForm" tfw-create-request="megaPaymentCtrl.createRequest">
+            <ng-include src="'js/pegasus/module/${servicename.toLowerCase()}/${servicename}Input.html'" />
+        </pg-tfw-input>
+
+
+        <pg-tfw-forecast process-transaction-data="megaPaymentCtrl.processForecastData">
+            <ng-include src="'js/pegasus/module/${servicename.toLowerCase()}/${servicename}Forecast.html'" />
+        </pg-tfw-forecast>
+
+
+
+        <pg-tfw-result process-transaction-data="megaPaymentCtrl.processResultData">
+            <ng-include src="'js/pegasus/module/${servicename.toLowerCase()}/${servicename}Result.html'" />
+        </pg-tfw-result>
+    </form>
+
+</div>

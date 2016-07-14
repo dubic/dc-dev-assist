@@ -1,0 +1,273 @@
+[
+    {
+        "name": "/${servicename.toLowerCase()}-service/pom.xml",
+        "path": "module",
+        "template": "service-pom.vm",
+        "action": "REPLACE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-shared/pom.xml",
+        "path": "module",
+        "template": "shared-pom.vm",
+        "action": "REPLACE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/foundation-guiwar/src/main/webapp/WEB-INF/spring/app-servlet.xml",
+        "path": "pegasus",
+        "template": "app-servlet.vm",
+        "action": "APPEND",
+        "process": true,
+        "startline": "<context:component-scan base-package=\"pegasus\" use-default-filters=\"false\">",
+        "endline": "</context:component-scan>",
+        "checktext":"${servicename.toLowerCase()}"
+    }
+    ,
+    {
+        "name": "/foundation-guiwar/src/main/resources/pegasus/project/internetbank/channel/ActionDataConfig.xml",
+        "path": "pegasus",
+        "template": "action-data-config.vm",
+        "action": "APPEND",
+        "process": true,
+        "endline": "</ActionData>",
+        "checktext":"${servicename.toLowerCase()}/start"
+    }
+    ,
+    {
+        "name": "/foundation-guiwar/src/main/resources/pegasus/project/internetbank/channel/MenuStructureListConfig.xml",
+        "path": "pegasus",
+        "template": "manual.vm",
+        "action": "MANUAL",
+        "process": true
+    }
+    ,
+    {
+        "name": "/netbanksrv-core/src/main/resources/script/sql/demo/customercontract/customercontract-function.sql",
+        "path": "pegasus",
+        "template": "customercontract-function.vm",
+        "action": "APPEND",
+        "process": true,
+        "checktext": "${servicename.toLowerCase()}"
+    }
+    ,
+    {
+        "name": "/netbanksrv-core/src/main/resources/script/sql/demo/functionmanagement/functionmanagement.sql",
+        "path": "pegasus",
+        "template": "functionmanagement.vm",
+        "action": "PREPEND",
+        "process": true,
+        "checktext": "${servicename.toLowerCase()}"
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-service/src/main/resources/script/versions/1.0.0/dml/resources/${servicename.toLowerCase()}-resources-en.sql",
+        "path": "module",
+        "template": "resources-en-sql.vm",
+        "action": "REPLACE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/foundation-guiwar/src/main/java/pegasus/project/foundation/FoundationRemoteConfig.java",
+        "path": "pegasus",
+        "template": "foundation-remote.vm",
+        "action": "APPEND",
+        "process": true,
+        "endline": "public class FoundationRemoteConfig",
+        "checktext":"@Enable${servicename}FunctionsRemote"
+    }
+    ,
+    {
+        "name": "/foundation-guiwar/src/main/resources/js/foundation/index.js",
+        "path": "pegasus",
+        "template": "index-js.vm",
+        "action": "APPEND",
+        "process": true,
+        "startline": "angular.module",
+        "endline": "]);",
+        "checktext":"pegasus.module.${servicename.toLowerCase()}"
+    }
+    ,
+    {
+        "name": "/netbanksrv-core/src/main/java/pegasus/project/netbanksrv/NetBankSrvDSDBConfig.java",
+        "path": "pegasus",
+        "template": "NetBankSrvDSDBConfig.vm",
+        "action": "REMOVE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/dao/${servicename}DaoImpl.java",
+        "path": "module",
+        "template": "daoimpl.vm",
+        "action": "REPLACE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/service/${servicename}ServiceImpl.java",
+        "path": "module",
+        "template": "service-impl.vm",
+        "action": "REPLACE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/facade/${servicename}FacadeImpl.java",
+        "path": "module",
+        "template": "facade-impl.vm",
+        "action": "REPLACE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-client-customer-ng/src/main/resources/js/pegasus/module/${servicename.toLowerCase()}/module.js",
+        "path": "module",
+        "template": "module-js.vm",
+        "action": "REPLACE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/netbanksrv-core/src/main/java/pegasus/project/netbanksrv/config/${servicename}ImportConfig.java",
+        "path": "pegasus",
+        "action": "DELETE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/client/common/${servicename}ControllerConfig.java",
+        "path": "module",
+        "action": "DELETE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/service/config",
+        "path": "module",
+        "action": "DELETE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/client/common/${servicename}ControllerConfig.java",
+        "path": "module",
+        "action": "DELETE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/netbanksrv-core/src/main/java/pegasus/project/netbanksrv/config/${servicename}Config.java",
+        "path": "pegasus",
+        "template": "service-config.vm",
+        "action": "CREATE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/Enable${servicename}Controllers.java",
+        "path": "module",
+        "template": "service-config.vm",
+        "action": "CREATE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/${servicename}ControllerImportSelector.java",
+        "path": "module",
+        "template": "controller-imp-slectector.vm",
+        "action": "CREATE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/internal/${servicename}ControllerConfiguration.java",
+        "path": "module",
+        "template": "controller-configuration.vm",
+        "action": "CREATE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/${servicename}ControllerConfigurer.java",
+        "path": "module",
+        "template": "controller-configurer.vm",
+        "action": "CREATE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/${servicename}ControllerConfigurerAdapter.java",
+        "path": "module",
+        "template": "controller-conf-adapter.vm",
+        "action": "CREATE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-shared/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/Enable${servicename}FunctionsRemote.java",
+        "path": "module",
+        "template": "functions-remomte.vm",
+        "action": "CREATE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-shared/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/${servicename}RemoteImportSelector.java",
+        "path": "module",
+        "template": "remote-import-selector.vm",
+        "action": "CREATE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-shared/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/internal/${servicename}RemoteConfiguration.java",
+        "path": "module",
+        "template": "remote-configuration.vm",
+        "action": "CREATE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/Enable${servicename}.java",
+        "path": "module",
+        "template": "enable.vm",
+        "action": "CREATE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/${servicename}ImportSelector.java",
+        "path": "module",
+        "template": "import-selector.vm",
+        "action": "CREATE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/internal/${servicename}Configuration.java",
+        "path": "module",
+        "template": "Configuration.vm",
+        "action": "CREATE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/${servicename}Configurer.java",
+        "path": "module",
+        "template": "Configurer.vm",
+        "action": "CREATE",
+        "process": true
+    }
+    ,
+    {
+        "name": "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/${servicename}ConfigurerAdapter.java",
+        "path": "module",
+        "template": "ConfigurerAdapter.vm",
+        "action": "CREATE",
+        "process": true
+    }
+]

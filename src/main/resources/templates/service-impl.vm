@@ -1,0 +1,39 @@
+package pegasus.module.${servicename.toLowerCase()}.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import pegasus.module.${servicename.toLowerCase()}.api.${servicename}Service;
+import pegasus.module.${servicename.toLowerCase()}.dao.${servicename}Dao;
+
+/**
+ * Service implementation for the ${servicename.toLowerCase()} module.
+ * @author mozes
+ */
+@Service
+public class ${servicename}ServiceImpl implements ${servicename}Service
+{
+	//	@Autowired
+	private ${servicename}Dao ${servicename.toLowerCase()}Dao;
+	
+	public ${servicename}ServiceImpl(${servicename}Dao ${servicename.toLowerCase()}Dao)
+	{
+		if (${servicename.toLowerCase()}Dao == null)
+		{
+			throw new IllegalArgumentException(${servicename}ServiceImpl.class.getName() + " requires a valid " + ${servicename}Dao.class.getName() + " to be constructor-injected.");
+		}
+		else
+		{
+			this.${servicename.toLowerCase()}Dao = ${servicename.toLowerCase()}Dao;
+		}
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<String> get${servicename}List()
+	{
+		return ${servicename.toLowerCase()}Dao.get${servicename}List();
+	}
+}

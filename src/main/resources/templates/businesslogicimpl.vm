@@ -1,0 +1,170 @@
+package pegasus.module.${servicename.toLowerCase()}.tfw;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import pegasus.component.auditlog.annotation.AuditLog;
+import pegasus.component.storeandforward.bean.BusinessForecastReply;
+import pegasus.component.storeandforward.bean.BusinessProcessReply;
+import pegasus.component.storeandforward.bean.TransactionData;
+import pegasus.component.storeandforward.businesslogic.BusinessLogic;
+import pegasus.component.storeandforward.lifecycle.OperationContext;
+import pegasus.component.storeandforward.lifecycle.auditlogfilter.BusinessLogicAuditLogFilter;
+import pegasus.framework.businessmessage.bean.BusinessMessage;
+import pegasus.framework.businessmessage.bean.BusinessMessageType;
+import pegasus.framework.businessmessage.exception.BusinessMessageAwareException;
+import pegasus.framework.typebase.BaseBean;
+import pegasus.module.${servicename.toLowerCase()}.api.${servicename}Service;
+import pegasus.module.${servicename.toLowerCase()}.facade.${servicename}Facade;
+import pegasus.module.${servicename.toLowerCase()}.tfw.bean.${servicename}TFWForecastReply;
+import pegasus.module.${servicename.toLowerCase()}.tfw.bean.${servicename}TFWTransactionReply;
+import pegasus.module.${servicename.toLowerCase()}.tfw.bean.${servicename}TFWTransactionRequest;
+
+public class ${servicename}BusinessLogicImpl implements
+		BusinessLogic<${servicename}TFWTransactionRequest, ${servicename}TFWTransactionReply, ${servicename}TFWForecastReply, TransactionData<${servicename}TFWTransactionRequest, ${servicename}TFWTransactionReply, ${servicename}TFWForecastReply>>
+{
+
+	//private ${servicename}Repository ${servicename.toLowerCase()}Repository;
+	@Autowired
+	private ${servicename}Service ${servicename.toLowerCase()}Service;
+
+	//	public ${servicename}BusinessLogicImpl(${servicename}Repository ${servicename.toLowerCase()}Repository)
+	//	{
+	//		if (${servicename.toLowerCase()}Repository == null)
+	//		{
+	//			throw new IllegalArgumentException("A valid " + ${servicename}Repository.class.getName() + " @Bean is needed for " + ${servicename}BusinessLogicImpl.class.getName());
+	//		}
+	//		else
+	//		{
+	//			this.${servicename.toLowerCase()}Repository = ${servicename.toLowerCase()}Repository;
+	//		}
+	//	}
+
+        @AuditLog(filter = BusinessLogicAuditLogFilter.class)
+	@Override
+	public BusinessForecastReply<${servicename}TFWForecastReply> forecast(OperationContext<TransactionData<${servicename}TFWTransactionRequest, ${servicename}TFWTransactionReply, ${servicename}TFWForecastReply>> operationContext) throws BusinessMessageAwareException
+	{
+		/**
+		 * "The" high-level TFW Forecast Response Reply wrapper object to be returned, 
+		 * wrapping the an actual
+		 * ${servicename}TFWForecastReply payload object 
+		 * which contains:
+		 *  - business Forecast response (like the Fee which is calculated during this forecast)
+		 *  - business messages (warnings only)
+		 *  
+		 *  Note: only warning kind-of (BusinessMessage objects .setType()) to be returned by this payload object as
+		 *  - there is no reason to pass success messages to the UI at this point (as the transaction is not completed yet, this is just a forecast)
+		 *  - errors will be thrown (throw new BusinessMessageAwareException()) instead of being returned as ordinary BusinessMessage (SUCCESS, WARNING, ERROR, INFO) etc. objects.
+		 */
+		BusinessForecastReply<${servicename}TFWForecastReply> businessforecastreply = new BusinessForecastReply<${servicename}TFWForecastReply>();
+
+		/**
+		 * Forecast Response
+		 * 
+		 * The actual "response" payload for the actual Forecast run:
+		 * - business messages (warnings)
+		 * - calculated fee
+		 */
+		${servicename}TFWForecastReply actualForecastreply = new ${servicename}TFWForecastReply();
+
+		/**
+		 * TFW Service Request (posted from the UI (does not contain the calculated fee))
+		 */
+		${servicename}TFWTransactionRequest transactionRequest = operationContext.getTransaction().getTransactionData().getTransactionRequest();
+
+		/**
+		 * Illustrating the 4 types of BusinessMessages (see: BusinessMessage.setType(...))
+		 */
+		List<BusinessMessage> forecastedErrors = new ArrayList<BusinessMessage>();
+		List<BusinessMessage> forecastedWarnings = new ArrayList<BusinessMessage>();
+		//  Just for illustration purposes: there are 2 additional kinds of Business Messages. Each will be converted to JSON and grouped under .errors  .successes etc...
+		//	List<BusinessMessage> forecastedSuccesses = new ArrayList<BusinessMessage>();
+		//	List<BusinessMessage> forecastedInfos = new ArrayList<BusinessMessage>();
+
+		/**
+		 * Previous Forecast responses if any (previous attempts)
+		 */
+		${servicename}TFWForecastReply previousTransactionForecastResponseIfAny = operationContext.getTransaction().getTransactionData().getTransactionForecast(); // forecastRESPONSE
+		if ((previousTransactionForecastResponseIfAny != null) && (previousTransactionForecastResponseIfAny.getFee()) != null)
+		{
+			System.out.printf("FYI: fee has been calculated in previous Forecast attempts for this transaction as %s. Now recalculating.. ", previousTransactionForecastResponseIfAny.getFee());
+		}
+		//Amount limit check
+		if (transactionRequest.getAmount().compareTo(new BigDecimal(100000)) == 1)
+		{
+			//transaction amount < 100000;
+			BusinessMessage bm = new BusinessMessage();
+			bm.setCode(${servicename}Facade.TRANSFER_AMOUNT_MORE_THAN_MAX);
+			bm.setType(BusinessMessageType.ERROR);
+			forecastedErrors.add(bm);
+		}
+		//Input logic validation
+
+		//		assert (fee != null) || ((fee == null) && (forecastedErrors.size() >= 1));
+		//		actualForecastreply.setFee(fee); // assuming fee is non-null or if null, there are at least 1 forecastError spotted already by the forecast logic
+
+		if (forecastedErrors.size() > 0)
+		{
+			// throwing an exception of BusinessMessageAwareException will stop the UI flow control from switching to the "${servicename}Forecast.html" panel
+			// and the user will stay on the ${servicename}Input.html panel
+			// error message and invalid input fields will be marked automatically
+			// see: BusinessMessage.setFieldId(...) example above above
+			throw new BusinessMessageAwareException(forecastedErrors);
+		}
+		else
+		{
+			businessforecastreply.setTransactionForecast(actualForecastreply);
+			actualForecastreply.setBusinessMessage(forecastedWarnings);
+			// actualForecastreply.setBusinessMessage(forecastedSuccessess);
+			// actualForecastreply.setBusinessMessage(forecastedInfos);
+			return businessforecastreply;
+		}
+
+	}
+
+        @AuditLog(filter = BusinessLogicAuditLogFilter.class)
+	@Override
+	public BusinessProcessReply<${servicename}TFWTransactionReply> process(OperationContext<TransactionData<${servicename}TFWTransactionRequest, ${servicename}TFWTransactionReply, ${servicename}TFWForecastReply>> operationContext) throws BusinessMessageAwareException
+	{
+		System.out.println("PROCESS TRANSACTION");
+		BusinessProcessReply<${servicename}TFWTransactionReply> businessProcessReply = new BusinessProcessReply<${servicename}TFWTransactionReply>();
+		${servicename}TFWTransactionReply actualSynchronousProcessReply = new ${servicename}TFWTransactionReply();
+
+		${servicename}TFWTransactionRequest transactionRequest = operationContext.getTransaction().getTransactionData().getTransactionRequest();
+
+
+		System.out.println(transactionRequest.toString());
+                /*
+                boolean wahala = false;
+                if (wahala)
+		{
+                    throw new BusinessMessageAwareException(${servicename}Facade.BUSINESSMESSAGE_CUSTOMIZE);
+		}
+                */
+                return businessProcessReply;
+	}
+
+        @AuditLog(filter = BusinessLogicAuditLogFilter.class)
+	@Override
+	public BusinessProcessReply<${servicename}TFWTransactionReply> processReply(BaseBean reply, OperationContext<TransactionData<${servicename}TFWTransactionRequest, ${servicename}TFWTransactionReply, ${servicename}TFWForecastReply>> operationContext)
+			throws BusinessMessageAwareException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@AuditLog(filter = BusinessLogicAuditLogFilter.class)
+	@Override
+	public BusinessProcessReply<${servicename}TFWTransactionReply> processReply(Exception exception, OperationContext<TransactionData<${servicename}TFWTransactionRequest, ${servicename}TFWTransactionReply, ${servicename}TFWForecastReply>> operationContext)
+			throws BusinessMessageAwareException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

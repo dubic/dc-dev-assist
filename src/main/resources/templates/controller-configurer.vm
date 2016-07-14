@@ -1,0 +1,13 @@
+package pegasus.module.${servicename.toLowerCase()}.config;
+/**
+ * Configurer SPI for the ${servicename} Controller
+ * 
+ * @author dubic
+ *
+ */
+public interface ${servicename}ControllerConfigurer
+{
+	// as this is just the beginning of the training there is nothing offered for customization at this very moment...
+	// there will be a dedicated chapter on "opening up" customization options for ${servicename} later...
+
+}

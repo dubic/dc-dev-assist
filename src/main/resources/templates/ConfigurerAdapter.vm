@@ -1,0 +1,38 @@
+package pegasus.module.${servicename.toLowerCase()}.config;
+
+import org.apache.ibatis.session.SqlSessionFactory;
+
+import pegasus.module.${servicename.toLowerCase()}.api.${servicename}Service;
+
+/**
+ * The default "placeholder" for saying "We are fine with the factory default BlackBox defaults unless told otherwise.
+ * 
+ * @author mozes
+ *
+ */
+public class ${servicename}ConfigurerAdapter implements ${servicename}Configurer
+{
+
+    @Override
+    public SqlSessionFactory getSqlSessionFactory()
+    {
+	/**
+	* null: "We are okay with the default SqlSessionFactory" 
+	* specified at 
+	* @see ${servicename}Configuration.java
+	*/
+	return null;
+    }
+
+    @Override
+    public ${servicename}Service getAlternative${servicename}Service()
+    {
+	/**
+	 * null: "We are okay with the default implementation" 
+	 * specified at 
+	 * @see ${servicename}Configuration.java
+	 */
+	return null;
+    }
+
+}

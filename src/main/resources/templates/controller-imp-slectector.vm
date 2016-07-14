@@ -1,0 +1,13 @@
+package pegasus.module.${servicename.toLowerCase()}.config;
+
+import org.springframework.context.annotation.ImportSelector;
+import org.springframework.core.type.AnnotationMetadata;
+
+public class ${servicename}ControllerImportSelector implements ImportSelector
+{
+    @Override
+    public String[] selectImports(AnnotationMetadata importingClassMetadata)
+    {
+	return new String[] { "pegasus.module.${servicename.toLowerCase()}.config.internal.${servicename}ControllerConfiguration" };
+    }
+}

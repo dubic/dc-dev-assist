@@ -1,0 +1,28 @@
+package pegasus.module.${servicename.toLowerCase()}.config;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.springframework.context.annotation.Import;
+
+/**
+ * Configures the ${servicename} function facade as remote bean.
+ * Will be used by FoundationGUI.war at
+ * FoundationRemoteConfig.java
+ * 
+ * @see ${servicename}EnableFunctionRemoteConfigurer
+ * 
+ * @author dubic
+ *
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Target(ElementType.TYPE)
+@Import(${servicename}RemoteImportSelector.class)
+public @interface Enable${servicename}FunctionsRemote
+{
+
+}

@@ -62,30 +62,17 @@ function ModuleCtrl($scope, $http, $mdDialog, filesCache, $q) {
 //        $scope.processing = false;
         var indices = [];
         for (var i = 0; i < $scope.config.files.length; i++) {
-            $scope.config.files[i].status = 'waiting';
-            $scope.config.files[i].status = 'color';
-            indices.push(i);
+            $scope.config.files[i].status = 'waiting...';
+            $scope.config.files[i].color = 'brown';
+            if($scope.config.files[i].process){
+                indices.push(i);
+            }else{
+                $scope.config.files[i].status = 'excluded';
+            }
         }
         console.log('running all');
         process(indices);
     }
-
-//    function process(file) {
-//        file.status = 'processing';
-//        file.color = 'blue';
-//        $scope.filesDone = false;
-//        $http.post('/module/' + $scope.config.moduleName + '/file/process?tfw=' + $scope.config.tfw, file)
-//                .success(function (result) {
-//                    file.status = result.status;
-//                    if (result.status !== 'error') {
-//                        file.color = 'green';
-//                        $scope.config.processedFiles++;
-//                    } else {
-//                        file.color = 'red';
-//                    }
-//                    $scope.filesDone = true;
-//                });
-//    }
 
     function process(indices) {
         var index = indices.shift();

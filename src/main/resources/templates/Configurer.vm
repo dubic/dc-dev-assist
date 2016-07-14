@@ -1,0 +1,16 @@
+package pegasus.module.${servicename.toLowerCase()}.config;
+
+import pegasus.module.${servicename.toLowerCase()}.api.${servicename}Service;
+
+/**
+ * Configurer SPI for the ${servicename} Function Facade / Service /MyBatis Mapper / DAO
+ * 
+ * @author dubic
+ *
+ */
+public interface ${servicename}Configurer extends pegasus.framework.persistence.config.PersistenceConfigurer
+{
+
+    ${servicename}Service getAlternative${servicename}Service();
+
+}

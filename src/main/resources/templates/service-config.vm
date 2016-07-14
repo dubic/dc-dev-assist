@@ -1,0 +1,11 @@
+package pegasus.project.netbanksrv.config;
+ 
+import org.springframework.context.annotation.Configuration;
+ 
+import pegasus.module.${servicename.toLowerCase()}.config.Enable${servicename};
+ 
+@Configuration
+@Enable${servicename}(islamicBankingMode = false)
+public class ${servicename}Config
+{
+}

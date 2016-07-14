@@ -6,10 +6,13 @@
 package com.dubic.dc.dev.assist.services;
 
 import com.dubic.dc.dev.assist.dao.ModFile;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +22,8 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
@@ -32,69 +37,63 @@ public class ModuleService {
     private final String serviceKey = "servicename";
     @Autowired
     private VelocityEngine engine;
+    @Value("classpath:files.json")
+    private Resource filesResource;
+    @Value("classpath:tfwfiles.json")
+    private Resource tfwfilesResource;
 
-    public List<ModFile> listAffectedFiles(Map m) {
-        List<ModFile> files = new ArrayList<>();
-        String p = ev(m, "modulePath");
-        String sname = m.get("moduleName").toString();
-        String lname = sname.toLowerCase();
-        String peg = m.get("pegasus").toString().toLowerCase();
-        //FILES START HERE
-        files.add(createModFile(p, "/${servicename}-service/pom.xml", lname, "service-pom.vm", ModFile.REPLACE, null, null));
-        files.add(createModFile(p, "/${servicename}-shared/pom.xml", lname, "shared-pom.vm", ModFile.REPLACE, null, null));
-        files.add(createModFile(peg, "/foundation-guiwar/src/main/webapp/WEB-INF/spring/app-servlet.xml", lname, "app-servlet.vm", ModFile.APPEND, "<context:component-scan base-package=\"pegasus\" use-default-filters=\"false\">", "</context:component-scan>"));
-        files.add(createModFile(peg, "/foundation-guiwar/src/main/resources/pegasus/project/internetbank/channel/ActionDataConfig.xml", lname, "action-data-config.vm", ModFile.APPEND, null, "</ActionData>"));
-        files.add(createModFile(peg, "/foundation-guiwar/src/main/resources/pegasus/project/internetbank/channel/MenuStructureListConfig.xml", lname, "manual.vm", ModFile.MANUAL, null, null));
-////        SQL CHANGES
-        files.add(createModFile(peg, "/netbanksrv-core/src/main/resources/script/sql/demo/customercontract/customercontract-function.sql", lname, "customercontract-function.vm", ModFile.APPEND, null, null));
-//        files.add(createModFile(peg, "/netbanksrv-core/src/main/resources/script/sql/demo/customercontract/customercontract-protectedobject.sql", lname, null));
-//        files.add(createModFile(peg, "/netbanksrv-core/src/main/resources/script/sql/demo/functionmanagement/functionmanagement.sql", lname, null));
-////        files.add(createModFile(p,"/${servicename}-service/target/classes/script/versions/1.0.0/dml/resources/minipayment-resources-en.sql", lname,null));
-////        JAVA/JAVASCRIPT CHANGES
-//        files.add(createModFile(peg, "/foundation-guiwar/src/main/java/pegasus/project/foundation/FoundationRemoteConfig.java", lname, null));
-//        files.add(createModFile(peg, "/foundation-guiwar/src/main/resources/js/foundation/index.js", lname, null));
-//        files.add(createModFile(peg, "/netbanksrv-core/src/main/java/pegasus/project/netbanksrv/NetBankSrvDSDBConfig.java", lname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/controller/${servicename}Controller.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/dao/${servicename}DaoImpl.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/service/${servicename}ServiceImpl.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/facade/${servicename}FacadeImpl.java", sname, null));
-//        files.add(createModFile(p, "/${servicename}-client-customer-ng/src/main/resources/js/pegasus/module/${servicename}/module.js", lname, null));
-////        ---------------------DELETE------------>
-//        files.add(createModFile(peg, "/netbanksrv-core/src/main/java/pegasus/project/netbanksrv/config/${servicename}ImportConfig.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename}/client/common/${servicename}ControllerConfig.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/service/config", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/client/common/${servicename}ControllerConfig.java", sname, null));
-////        ---------------------CREATE------------>
-//        files.add(createModFile(peg, "/netbanksrv-core/src/main/java/pegasus/project/netbanksrv/config/${servicename}Config.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/Enable${servicename}Controllers.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/${servicename}ControllerImportSelector.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/internal/${servicename}ControllerConfiguration.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/${servicename}ControllerConfigurer.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-client-common/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/${servicename}ControllerConfigurerAdapter.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-shared/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/Enable${servicename}FunctionsRemote.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-shared/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/${servicename}RemoteImportSelector.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-shared/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/internal/${servicename}RemoteConfiguration.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/Enable${servicename}.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/${servicename}ImportSelector.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/internal/${servicename}Configuration.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/${servicename}Configurer.java", sname, null));
-//        files.add(createModFile(p, "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/config/${servicename}ConfigurerAdapter.java", sname, null));
+    public List<ModFile> listAffectedFiles(Map m) throws IOException {
+//        List<ModFile> files = new ArrayList<>();
+        String modulePath = ev(m, "modulePath");
+        String moduleName = m.get("moduleName").toString();
+
+        String pegasusPath = m.get("pegasus").toString().toLowerCase();
+        //Load files from gson
+        List<ModFile> files = loadFilesFromJson(filesResource);
+        files = resolveFiles(files, moduleName, modulePath, pegasusPath);
+        //TFW
+        if ((Boolean) m.get("tfw") == true) {
+            List<ModFile> tfwfiles = loadFilesFromJson(tfwfilesResource);
+            tfwfiles = resolveFiles(tfwfiles, moduleName, modulePath, pegasusPath);
+            files.addAll(tfwfiles);
+        }
 
         return files;
     }
 
-    private ModFile createModFile(String path, String name, String moduleName, String template, String action, String start, String end) {
+    private List<ModFile> loadFilesFromJson(Resource r) throws IOException {
+        File f = r.getFile();
+        Type listType = new TypeToken<ArrayList<ModFile>>() {
+        }.getType();
+
+        return new Gson().fromJson(FileUtils.readFileToString(f), listType);
+
+    }
+
+    private List<ModFile> resolveFiles(List<ModFile> files, String moduleName, String modPath, String pegPath) throws IOException {
         Map<String, Object> params = new HashMap();
         params.put(serviceKey, moduleName);
-        ModFile modFile = new ModFile(resolve(path + name, params), true);
-//        System.out.println("Loading file : "+modFile.getPath());
-        modFile.setFound(new File(modFile.getPath()).exists());
-        modFile.setName(resolve(name, params));
-        modFile.setTemplate(template);
-        modFile.setAction(action);
-        modFile.setStartline(start);
-        modFile.setEndline(end);
-        return modFile;
+        for (ModFile file : files) {
+            file.setName(resolve(file.getName(), params));
+            if (null != file.getChecktext()) {
+                file.setChecktext(resolve(file.getChecktext(), params));
+            }
+
+            if (null != file.getPath()) {
+                switch (file.getPath()) {
+                    case "module":
+                        file.setPath(resolve(modPath + file.getName(), params));
+                        break;
+                    case "pegasus":
+                        file.setPath(resolve(pegPath + file.getName(), params));
+                        break;
+                    default:
+                        throw new IOException(file.getSimpleName() + ": Json File path not either pegasus or module");
+                }
+            }
+            file.setFound(new File(file.getPath()).exists());
+        }
+        return files;
     }
 
     /**
@@ -129,8 +128,12 @@ public class ModuleService {
     public String processFile(String moduleName, boolean tfw, ModFile mfile) throws IOException {
         if (ModFile.MANUAL.equals(mfile.getAction())) {
             return "Edit manually";
+        } else if (ModFile.DELETE.equals(mfile.getAction())) {
+            FileUtils.deleteQuietly(new File(mfile.getPath()));
+            System.out.println("delete file : " + new File(mfile.getName()));
+            return "deleted";
         }
-        
+
         File f = new File(mfile.getPath());
         Map<String, Object> p = new HashMap<>();
         p.put(serviceKey, moduleName);
@@ -143,7 +146,7 @@ public class ModuleService {
             return "replaced";
         } else if (ModFile.APPEND.equals(mfile.getAction())) {
             //check if line exists
-            if (FileUtils.readFileToString(f).contains(contents)) {
+            if (FileUtils.readFileToString(f).contains(mfile.getChecktext())) {
                 System.out.println("EXISTS IN FILE!!! : " + f.getName());
                 return "exists";
             }
@@ -184,6 +187,39 @@ public class ModuleService {
             System.out.println("Appended to file : " + f.getName());
             return "appended";
 
+        } else if (ModFile.PREPEND.equals(mfile.getAction())) {
+            if (FileUtils.readFileToString(f).contains(mfile.getChecktext())) {
+                System.out.println("EXISTS IN FILE!!! : " + f.getName());
+                return "exists";
+            }
+
+            List<String> originalLines = FileUtils.readLines(f);
+            originalLines.add(0, contents);
+            FileUtils.writeLines(f, originalLines);
+            System.out.println("Prepended to file : " + f.getName());
+            return "prepended";
+        } else if (ModFile.REMOVE.equals(mfile.getAction())) {
+            List<String> lines = FileUtils.readLines(f);
+            int i = 0;
+            for (String line : lines) {
+                if (line.contains(contents)) {
+//                    exists?
+                    if (line.startsWith("//")) {
+                        return "exists";
+                    }
+                    lines.remove(i);
+                    lines.add(i, "//".concat(line));
+                    break;
+                }
+                i++;
+            }
+            FileUtils.writeLines(f, lines);
+            System.out.println("Commented out from : " + f.getName());
+            return "commented";
+        } else if (ModFile.CREATE.equals(mfile.getAction())) {
+            FileUtils.write(f, contents, "UTF-8");
+            System.out.println("Created file : " + f.getName());
+            return "created";
         } else {
             System.out.println("No Action");
             return "no action";

@@ -1,0 +1,22 @@
+        @Bean(name = "${servicename}Lifecycle")
+        public Lifecycle get${servicename}Lifecycle(@Qualifier("${servicename}LifecycleOperations") FoundationLifecycleOperationsImpl lifecycleOperations)
+        {
+            FoundationLifecycle ${servicename.toLowerCase()}Lifecycle = new FoundationLifecycle();
+            ${servicename.toLowerCase()}Lifecycle.setLifecycleOperations(lifecycleOperations);
+            ${servicename.toLowerCase()}Lifecycle.setManagedFunction(${servicename}Facade.FUNCTION);
+            return ${servicename.toLowerCase()}Lifecycle;
+        }
+
+        @Bean(name = "${servicename}LifecycleOperations")
+        public FoundationLifecycleOperationsImpl get${servicename}LifecycleOperations(@Qualifier("${servicename}LifecycleBusinessLogic") BusinessLogic businessLogic)
+        {
+            FoundationLifecycleOperationsImpl ${servicename.toLowerCase()}LifecycleOperations = new FoundationLifecycleOperationsImpl();
+            ${servicename.toLowerCase()}LifecycleOperations.setBusinessLogic(businessLogic);
+            return ${servicename.toLowerCase()}LifecycleOperations;
+        }
+
+        @Bean(name = "${servicename}LifecycleBusinessLogic")
+        public BusinessLogic get${servicename}LifecycleBusinessLogic()
+        {
+            return new ${servicename}BusinessLogicImpl();
+        }

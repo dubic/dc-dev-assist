@@ -1,0 +1,13 @@
+#if($tfw)
+insert into RSC_RESOURCE (RESOURCEKEY, LOCALE, TEXT) values ('pegasus.internetbank.menu:${servicename}Create', 'en', '${servicename}');
+INSERT INTO RSC_RESOURCE(RESOURCEKEY, LOCALE, TEXT) VALUES('pegasus.function.${servicename.toLowerCase()}', 'en', '${servicename}');
+insert into RSC_RESOURCE (RESOURCEKEY, LOCALE, TEXT) values ('pegasus.module.${servicename.toLowerCase()}.client-customer-ng:STOREDRAFT_PROCESSED_DRAFT', 'en', 'Successfully Stored As Draft');
+insert into RSC_RESOURCE (RESOURCEKEY, LOCALE, TEXT) values ('pegasus.module.${servicename.toLowerCase()}.client-customer-ng:PROCESS_PROCESSED_PROCESSED', 'en', 'Transfer of %(amount)s is processed successfully.');
+insert into RSC_RESOURCE (RESOURCEKEY, LOCALE, TEXT) values ('pegasus.module.${servicename.toLowerCase()}.client-customer-ng:VIEW_PROCESSED_PROCESSING', 'en', 'Transfer of %(amount)s is under processing...');
+insert into RSC_RESOURCE (RESOURCEKEY, LOCALE, TEXT) values ('pegasus.module.${servicename.toLowerCase()}.client-customer-ng:SIGN_PROCESSED_PENDING', 'en', 'Transfer of %(amount)s is waiting for further signatures...!');
+insert into RSC_RESOURCE (RESOURCEKEY, LOCALE, TEXT) values ('pegasus.module.${servicename.toLowerCase()}.client-customer-ng:VIEW_PROCESSED_PROCESSED', 'en', 'Transfer of %(amount)s is processed successfully.');
+#else
+insert into RSC_RESOURCE (RESOURCEKEY, LOCALE, TEXT) values ('pegasus.module.${servicename.toLowerCase()}:${servicename}', 'en', '${servicename}');
+INSERT INTO RSC_RESOURCE(RESOURCEKEY, LOCALE, TEXT) VALUES('pegasus.function.${servicename.toLowerCase()}', 'en', '${servicename}');
+INSERT INTO RSC_RESOURCE(CHANNEL,RESOURCEKEY, LOCALE, TEXT) VALUES('IBN','pegasus.internetbank.menu:${servicename}Start','en','${servicename}');
+#end

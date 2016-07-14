@@ -1,0 +1,71 @@
+package pegasus.module.${servicename.toLowerCase()}.config.internal;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+#if($tfw)
+import pegasus.component.storeandforward.controller.TransactionalFunctionControllerHelper;
+#end
+import pegasus.module.${servicename.toLowerCase()}.config.${servicename}ControllerConfigurer;
+import pegasus.module.${servicename.toLowerCase()}.config.${servicename}ControllerConfigurerAdapter;
+import pegasus.module.${servicename.toLowerCase()}.controller.${servicename}Controller;
+import pegasus.module.${servicename.toLowerCase()}.facade.${servicename}Facade;
+
+@Configuration
+public class ${servicename}ControllerConfiguration
+{
+
+	/**
+	 * This is the "key" to the @EnableXXX driven Spring configuration model.
+	 * 
+	 * The "default" value (adapter) is there to say "no overrides are used by default" but the PS project
+	 * can provide an alternate @Bean which will override the default "Use BlackBox defaults" behaviour
+	 * when autowired here.
+	 * 
+	 * The autowired customization @Bean (if exists) will "replace" the factory-default behaviour and the custom values/behaviour
+	 * will take precedence over the default BlacBoxed factory default one.
+	 */
+	@Autowired(required = false)
+	protected ${servicename}ControllerConfigurer configurer = new ${servicename}ControllerConfigurerAdapter();
+
+	/**
+	 * Instantiating the Controller for the ${servicename}.
+	 * 
+	 * The Facade is injected explicitly (vs. Autowiring.
+	 * Autowiring is prohibited since Bundle 7.1 and Bundle 8 ("BlackBox release")
+	 * 
+	 * Q: Where does the Facade "comes from?"
+	 * A: the proxy for ${servicename}Facade has been configured previously at: @Enable${servicename}FunctionsRemote
+	 * 
+	 * ...
+	 * 
+	 * @Configuration
+	 * public class ${servicename}RemoteConfiguration
+	 * 
+	 * ...
+	 * 
+	 * @Bean
+	 * 	public ${servicename}Facade get${servicename}Facade()
+	 * 	{
+	 * 		return PegasusRemoteFactory.getProxy(${servicename}Facade.class, applicationContext.getBean(PegasusRemoteConfigurer.DEFAULT_REMOTE_CLIENT_INTERCEPTOR, PegasusRemoteClientInterceptor.class));
+	 * 	}
+	 * 
+	 * @param ${servicename.toLowerCase()}Facade
+	 * @return
+	 */
+        #if($tfw)
+        @Bean
+	public ${servicename}Controller get${servicename}Controller(TransactionalFunctionControllerHelper tfch, ${servicename}Facade lmtFacade)
+	{
+            return new ${servicename}Controller(tfch, lmtFacade);
+	}
+        #else
+        @Bean
+	public ${servicename}Controller get${servicename}Controller(${servicename}Facade ${servicename.toLowerCase()}Facade)
+	{
+            return new ${servicename}Controller(${servicename.toLowerCase()}Facade);
+	}
+        #end
+	
+}

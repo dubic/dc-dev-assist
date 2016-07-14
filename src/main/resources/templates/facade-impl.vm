@@ -1,0 +1,50 @@
+package pegasus.module.${servicename.toLowerCase()}.facade;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import pegasus.framework.functionfacade.Function;
+import pegasus.framework.functionfacade.Operation;
+import pegasus.module.${servicename.toLowerCase()}.api.${servicename}Service;
+
+/**
+ * Facade implementation for the ${servicename.toLowerCase()} module.
+ * @author mozes
+ */
+@Service
+@Function(${servicename}FacadeImpl.FUNCTION)
+public class ${servicename}FacadeImpl implements ${servicename}Facade
+{
+	public static final String FUNCTION = "${servicename.toLowerCase()}";
+	public static final String OPERATION_START = "start";
+
+
+	//	@Autowired
+	private ${servicename}Service ${servicename.toLowerCase()}Service;
+
+	public ${servicename}FacadeImpl(${servicename}Service ${servicename.toLowerCase()}Service)
+	{
+		if (${servicename.toLowerCase()}Service == null)
+		{
+			throw new IllegalArgumentException(${servicename}FacadeImpl.class.getName() + " requires a valid " + ${servicename}Service.class.getName() + " to be constructor-injected.");
+		}
+		else
+		{
+			this.${servicename.toLowerCase()}Service = ${servicename.toLowerCase()}Service;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Operation(OPERATION_START)
+	@Override
+	public String getFoo()
+	{
+		return "FooBar";
+	}
+
+}

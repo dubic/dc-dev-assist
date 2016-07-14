@@ -1,0 +1,26 @@
+package pegasus.module.${servicename.toLowerCase()}.config;
+
+import org.springframework.context.annotation.ImportSelector;
+import org.springframework.core.type.AnnotationMetadata;
+
+/**
+ * Automatically loads 
+ * 
+ * pegasus.module.${servicename.toLowerCase()}.config.internal.${servicename}RemoteConfiguration
+ *
+ * via naming convention.(!)
+ * 
+ * (TODO: implements AbstractImportSelector?)
+ * 
+ * @author dubic
+ *
+ */
+public class ${servicename}RemoteImportSelector implements ImportSelector
+{
+    @Override
+    public String[] selectImports(AnnotationMetadata importingClassMetadata)
+    {
+	return new String[] { "pegasus.module.${servicename.toLowerCase()}.config.internal.${servicename}RemoteConfiguration" };
+    }
+
+}

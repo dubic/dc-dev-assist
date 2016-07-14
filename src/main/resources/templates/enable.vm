@@ -1,0 +1,18 @@
+package pegasus.module.${servicename.toLowerCase()}.config;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.springframework.context.annotation.Import;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Target(ElementType.TYPE)
+@Import(${servicename}ImportSelector.class)
+public @interface Enable${servicename}
+{
+    boolean islamicBankingMode() default false;
+}

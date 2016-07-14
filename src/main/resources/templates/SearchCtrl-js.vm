@@ -1,0 +1,243 @@
+namespace('Pegasus.module.${servicename.toLowerCase()}').${servicename}Ctrl = function(
+		resolvedPreloadedAccountsAndUUIDmapping, ${servicename}Service,
+		LoggerFactory, operationReply, PoIdConverter, Resource, $state) {
+
+    var vm = this;
+
+    // BINDABLE NON-FORM DATA (ie. not submitted) example:
+    // (to the top)
+
+    vm.accounts = resolvedPreloadedAccountsAndUUIDmapping.accounts;
+    vm.accountUUIDmapping = resolvedPreloadedAccountsAndUUIDmapping.extractedUUIDmapping;
+
+    vm.transfer = {}; //ui data holder
+    vm.data = {}; // static data holder
+
+    var logger = LoggerFactory.create('Pegasus.module.${servicename.toLowerCase()}.${servicename}Ctrl');
+
+// FUNCTIONS-------------------------------------
+	
+
+	function initTFWInputPanelOptionsFn() {
+		// console.log('INIIT FUNCTIONS CALLED');
+		return {
+			operation : 'create',
+			operationReply : operationReply,
+			functionId : '${servicename.toLowerCase()}',
+			buttonLabels : {
+				create : 'NEXT'
+			},
+			showNewButton : false,
+			autoSubmit : false
+		};
+	};
+
+    function initTFWinputFormFn(transactionData) {
+		if (!transactionData) {
+			// Fill the form with default values
+			// will be called after TFW transaction is created and confirmed.
+			// Let's reset all the members so the user can submit another
+			// payment.
+//			vm.transfer.pristine();
+//			LmtConstant.CURRENT_TRANS.ID = 0;
+		} else {
+			// Put the request to the scope from the preloaded operationReply
+			// The TFW will set the transactionData parameter in case you open
+			// the function with a
+			// $scope.request = transactionData.transactionRequest;
+		}
+
+		// // You can make form init async by returning a promise
+		// var defer = $q.defer();
+		// // resolve defer later
+		// return defer.promise;
+	};
+
+function createTFWrequestFn(request) {
+		logger.debug('createRequest', request);
+
+		// preparing AJAX payload
+		// colelcting FORM data
+		// reverse-mapping of AccountNumbers -> their UUIDs
+		var toServerRequestWithAccountNumberWaitingToBeReplacedToUUID = {
+			MiniPaymentStoreControllerRequest : {
+                            //fill in data 
+			}
+		};
+
+		var miniPaymentDataWithReplacedUUID = PoIdConverter.replace(
+				vm.accountUUIDmapping,
+				toServerRequestWithAccountNumberWaitingToBeReplacedToUUID);
+
+		var LOCALMoneyTransferTFWTransactionRequest = {
+			${servicename}TFWTransactionRequest : {}
+		};
+		angular.copy(miniPaymentDataWithReplacedUUID.MiniPaymentStoreControllerRequest,
+				LOCALMoneyTransferTFWTransactionRequest.${servicename}TFWTransactionRequest);
+
+		return LOCALMoneyTransferTFWTransactionRequest;
+
+	}
+
+// FORECAST-----------------------
+	function processForecastDataFn(transactionData, messages) {
+		// vm.forecastresponse = transactionData.transactionForecast;
+		// console.log("Fee returned by the server is:",
+		// vm.forecastresponse.fee);
+		// You can make force the tfw to wait until
+		// everything is loaded by returning a promise
+		// var defer = $q.defer();
+		// // resolve defer later
+		// return defer.promise;
+		logStatusChange(
+				"CREATE",
+				"CONFIRMATIONREQUIRED",
+				"<not persisted yet> (ie. nor created yet as the Operation is not finished yet (because it was intercepted by Confirmation Required case therefore now it is waiting in the Confirmation Required PHASE)");
+	}
+
+// RESULT-------------------
+	function processResultDataFn(transactionData, operation, status, messages) {
+		// {Operation; OperationPhase; FiniteStateMachine persisted TFW state}
+		logStatusChange(operation, "PROCESSED", status);
+
+		var key = null;
+		// {Operation; OperationPhase; FiniteStateMachine persisted TFW state}
+		switch (operation) {
+
+		case "STOREDRAFT":
+			// {Operation; OperationPhase; FiniteStateMachine persisted TFW
+			// state} == {STOREDRAFT; PROCESSED; ?}
+			switch (status) {
+			case "DRAFT":
+				key = 'pegasus.module.${servicename.toLowerCase()}.client-customer-ng:STOREDRAFT_PROCESSED_DRAFT';
+				break;
+			default:
+				throw "Programming error: unknown or non-handled Operation (now in PROCESSED state) ";
+			}
+
+			break;
+
+		case "PROCESS":
+			// {Operation; OperationPhase; FiniteStateMachine persisted TFW
+			// state} == {PROCESS; PROCESSED; PROCESSED}
+			switch (status) {
+			case "PROCESSED":
+				key = 'pegasus.module.${servicename.toLowerCase()}.client-customer-ng:PROCESS_PROCESSED_PROCESSED';
+				break;
+			default:
+				throw "Programming error: unknown or non-handled Operation (now in PROCESSED state) ";
+			}
+			break;
+
+		case "VIEW":
+			// {Operation; OperationPhase; FiniteStateMachine persisted TFW
+			// state} == {VIEW; PROCESSED; PROCESSING}
+			switch (status) {
+			case "PROCESSING":
+				key = 'pegasus.module.${servicename.toLowerCase()}.client-customer-ng:VIEW_PROCESSED_PROCESSING';
+				break;
+			case "PROCESSED":
+				key = 'pegasus.module.${servicename.toLowerCase()}.client-customer-ng:VIEW_PROCESSED_PROCESSED';
+				break;
+			case "FAILED":
+				key = 'pegasus.module.${servicename.toLowerCase()}.client-customer-ng:VIEW_PROCESSED_FAILED';
+				break;
+			default:
+				throw "Programming error: unknown or non-handled Operation (now in PROCESSED state) ";
+			}
+			break;
+
+		case "SIGN":
+			// {Operation; OperationPhase; FiniteStateMachine persisted TFW
+			// state} == {VIEW; PROCESSED; PROCESSING}
+			switch (status) {
+			case "PENDING":
+				key = 'pegasus.module.${servicename.toLowerCase()}.client-customer-ng:SIGN_PROCESSED_PENDING';
+				break;
+			default:
+				throw "Programming error: unknown or non-handled Operation (now in PROCESSED state) ";
+			}
+			break;
+
+		default:
+			throw "Programming error: unknown or non-handled Operation (now in PROCESSED state) ";
+		}
+
+		var actionbarActions = [];
+
+		
+		return {
+			title : Resource.resolve(key, {
+				amount : transactionData.transactionRequest.amount
+			}),
+			tip : 'Tip is here',
+			buttons : [ {
+				text : 'HOME',
+				handler : function() {
+					$state.go('ib.welcome')
+				}
+			}, {
+				text : 'NEW',
+				handler : function() {
+					$state.go('ib.${servicename.toLowerCase()}_create')
+				}
+			}, {
+				text : 'VIEW BLAH BLAH DETAILS',
+				handler : function() {
+					$state.go('ib.${servicename.toLowerCase()}_details')
+				}
+			} ],
+			actionbarActions : actionbarActions
+		};
+	}
+
+function logStatusChange(tfwOperationName, tfwOperationPhase,
+			tfwPersistedFiniteStateMechineState, doOperationsReply) {
+
+		console.group("TFW Operation Status change!");
+		console.group("OPERATION (SAF - StoreAndForward)");
+		console.group("Operation (under execution)");
+		console.log(tfwOperationName);
+		console
+				.log("of {pegasus.component.storeandforward.bean.Operation: CANCEL, CANCELDRAFT, CHANGESTATUS, CREATE, DECLINE, EXECUTE, MODIFY, PROCESS, PROCESSREPLY, SIGN, STOREDRAFT, VIEW}");
+
+		console.groupEnd();
+		console.group("Phase (actual status)");
+		console.log(tfwOperationPhase);
+		console
+				.log("of {pegasus.component.storeandforward.bean.OperationStatus: AUTHENTICATIONREQUIRED, CONFIRMATIONREQUIRED, FAILED, PREPARED, PROCESSED}");
+		console.groupEnd();
+		console.groupEnd();
+		console.group("FINITE STATE MACHINE (TFW - Transaction Framework)");
+		console.group("State (persisted)");
+		console.log(tfwPersistedFiniteStateMechineState);
+		console
+				.log("of {pegasus.component.storeandforward.bean.TransactionStatus: CANCELED, CANCELEDDRAFT, DECLINED, DRAFT, FAILED, OFFLINE, PENDING, PROCESSABLE, PROCESSED, PROCESSING, TIMEDOUT, VALUEDATED}");
+		console.groupEnd();
+		console.groupEnd();
+		// console.group("doOperations reply from server:");
+		// console.log(doOperationsReply);
+		// console.groupEnd();
+		console.groupEnd();
+	};
+
+// -------------------------
+	console.log('BEFORE INIIT FUNCTIONS ');
+	console.log(vm);
+	vm.initOptions = initTFWInputPanelOptionsFn;
+
+	// TFW - input form setup
+	vm.initForm = initTFWinputFormFn;
+	vm.createRequest = createTFWrequestFn;
+
+	// TFW - handler of the forecast response
+	vm.processForecastData = processForecastDataFn;
+
+	// TFW - handler of the process response
+	vm.processResultData = processResultDataFn;
+	console.log('AFTER EVERY EVERY');
+};
+Pegasus.module.${servicename.toLowerCase()}.${servicename}Ctrl.$inject = [
+		'resolvedPreloadedAccountsAndUUIDmapping', '${servicename}Service',
+		'LoggerFactory', 'operationReply', 'PoIdConverter', 'Resource',
+		'$state' ];

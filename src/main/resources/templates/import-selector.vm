@@ -1,0 +1,24 @@
+package pegasus.module.${servicename.toLowerCase()}.config;
+
+import org.springframework.context.annotation.ImportSelector;
+import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.type.AnnotationMetadata;
+
+public class ${servicename}ImportSelector implements ImportSelector
+{
+    @Override
+    public String[] selectImports(AnnotationMetadata importingClassMetadata)
+    {
+	AnnotationAttributes attributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(Enable${servicename}.class.getName(), false));
+	boolean criteria = attributes.getBoolean("islamicBankingMode");
+	if (criteria == false)
+	{
+            return new String[] { "pegasus.module.${servicename.toLowerCase()}.config.internal.${servicename}Configuration" };
+	}
+	else
+	{
+            throw new UnsupportedOperationException("Alternate BlackBox configuration illustration example. Implement some kind of islamic-related ${servicename}Controller behaviour, it's up to your taste and imagination.");
+            //return new String[] { "pegasus.module.${servicename.toLowerCase()}.config.internal.${servicename}IslamicBankingConfiguration" };
+	}
+    }
+}

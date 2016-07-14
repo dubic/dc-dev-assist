@@ -1,0 +1,48 @@
+[
+    {
+        "name": "/${servicename.toLowerCase()}-client-customer-ng/src/main/resources/js/pegasus/module/${servicename.toLowerCase()}/${servicename}.html",
+        "path": "module",
+        "template": "Megapayment.vm",
+        "action": "CREATE",
+        "process": true
+    },
+    {
+        "name": "/${servicename.toLowerCase()}-client-customer-ng/src/main/resources/js/pegasus/module/${servicename.toLowerCase()}/SearchCtrl.js",
+        "path": "module",
+        "template": "SearchCtrl-js.vm",
+        "action": "REPLACE",
+        "process": true
+    },
+    {
+        "name": "/${servicename.toLowerCase()}-shared/target/classes/META-INF/types/pegasus.module.${servicename.toLowerCase()}.tfw.bean.xsd",
+        "path": "module",
+        "template": "tfw-bean-xsd.vm",
+        "action": "CREATE",
+        "process": true
+    },
+    {
+        "name": "/netbanksrv-core/src/main/resources/script/sql/demo/tfw/transactionframework.sql",
+        "path": "pegasus",
+        "template": "transactionframework-sql.vm",
+        "action": "PREPEND",
+        "process": true,
+        "checktext": "${servicename}Lifecycle"
+    },
+    {
+        "name": "/netbanksrv-core/src/main/java/pegasus/project/netbanksrv/tfw/FoundationFunctionTFWConfig.java",
+        "path": "pegasus",
+        "template": "foundation-function-config.vm",
+        "action": "APPEND",
+        "process": true,
+        "startline": "{",
+        "endline": "@Bean",
+        "checktext": "${servicename}Lifecycle"
+    },
+    {
+        "name": "/${servicename.toLowerCase()}-service/src/main/java/pegasus/module/${servicename.toLowerCase()}/tfw/${servicename}BusinessLogicImpl.java",
+        "path": "module",
+        "template": "businesslogicimpl.vm",
+        "action": "CREATE",
+        "process": true
+    }
+]

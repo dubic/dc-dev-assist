@@ -1,0 +1,13 @@
+package pegasus.module.${servicename.toLowerCase()}.config;
+
+/**
+ * The default "placeholder" for saying "We are fine with the factory default BlackBox defaults unless told otherwise.
+ * 
+ * @author dubic
+ *
+ */
+public class ${servicename}ControllerConfigurerAdapter implements ${servicename}ControllerConfigurer
+{
+	// as this is just the beginning of the training there is nothing offered for customization at this very moment...
+	// there will be a dedicated chapter on "opening up" customization options for ${servicename} later...
+}

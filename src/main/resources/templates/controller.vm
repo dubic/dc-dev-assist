@@ -1,0 +1,193 @@
+#if($tfw)
+package pegasus.module.${servicename.toLowerCase()}.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import pegasus.component.storeandforward.bean.DoOperationsReply;
+import pegasus.component.storeandforward.bean.TransactionData;
+import pegasus.component.storeandforward.bean.TransactionForecast;
+import pegasus.component.storeandforward.bean.TransactionReply;
+import pegasus.component.storeandforward.bean.TransactionRequest;
+import pegasus.component.storeandforward.controller.TransactionalFunctionControllerHelper;
+import pegasus.framework.businessmessage.exception.BusinessMessageAwareException;
+import pegasus.framework.web.ErrorHandler;
+import pegasus.framework.web.protectedobject.annotation.ResolveProtectedEntity;
+import pegasus.module.${servicename.toLowerCase()}.facade.${servicename}Facade;
+//import pegasus.module.${servicename.toLowerCase()}.tfw.bean.${servicename}TFWTransactionRequest;
+
+/**
+ * Controller for the ${servicename.toLowerCase()} module.
+ * @author mozes
+ */
+@Controller("${servicename}Controller")
+@RequestMapping(value = "/${servicename.toLowerCase()}/")
+public class ${servicename}Controller
+{   
+    #if($tfw)
+	protected TransactionalFunctionControllerHelper transactionalFunctionControllerHelper;
+        private ${servicename}Facade ${servicename.toLowerCase()}Facade;
+
+        public ${servicename}Controller(TransactionalFunctionControllerHelper transactionalFunctionControllerHelper, ${servicename}Facade ${servicename.toLowerCase()}Facade)
+	{
+		/**
+		 * See? Injecting the TransactionalFunctionControllerHelper instead of the Facade!
+		 */
+		if (transactionalFunctionControllerHelper == null)
+		{
+			throw new IllegalArgumentException("A valid " + TransactionalFunctionControllerHelper.class.getName() + " @Bean is needed for " + ${servicename}Controller.class.getName());
+		}
+		else
+		{
+			this.transFunctionHelper = transactionalFunctionControllerHelper;
+		}
+
+		if (${servicename.toLowerCase()}Facade == null)
+		{
+			throw new IllegalArgumentException("A valid " + ${servicename}Facade.class.getName() + " @Bean is needed for " + ${servicename}Controller.class.getName());
+		}
+		else
+		{
+			this.${servicename.toLowerCase()}Facade = ${servicename.toLowerCase()}Facade;
+		}
+	}
+    #else
+        private ${servicename}Facade ${servicename.toLowerCase()}Facade;
+
+        /**
+	 *   No need for the Facade to be injected!!!
+	 */
+	//	private ${servicename}Facade ${servicename.toLowerCase()}Facade;
+
+	public ${servicename}Controller(TransactionalFunctionControllerHelper transactionalFunctionControllerHelper)
+	{
+		/**
+		 * See? Injecting the TransactionalFunctionControllerHelper instead of the Facade!
+		 */
+		if (transactionalFunctionControllerHelper == null)
+		{
+			throw new IllegalArgumentException("A valid " + TransactionalFunctionControllerHelper.class.getName() + " @Bean is needed for " + ${servicename}Controller.class.getName());
+		}
+		else
+		{
+			this.transactionalFunctionControllerHelper = transactionalFunctionControllerHelper;
+		}
+	}
+    #end
+
+	
+
+	// Remember: 
+	// DomesticTransferController.java
+	//
+	// 	@MakeProtectedEntity(ref = "productInstance.id", type = InternalTransferController.SOURCE_ACCOUNT_TYPE, global = true)
+	//
+	// public static final String SOURCE_ACCOUNT_TYPE = "ACCOUNT_DEFAULTPAYMENT";
+	//
+	// @ResolveProtectedEntity(ref = "sourceAccount", type = "ACCOUNT_DEFAULTPAYMENT")
+	// @SuppressWarnings("unchecked")
+	// @RequestMapping(value = MegaPaymentFacade.OPERATION_CREATE)
+	// @ResponseBody
+	// @ErrorHandler
+	// public DoOperationsReply<TransactionData<TransactionRequest, TransactionReply, TransactionForecast>> create(@RequestBody final MegaPaymentTFWTransactionRequest tfwRequest) throws BusinessMessageAwareException
+	// {
+	// 	System.out.println("Mega controller OPERATION_CREATE.. " + tfwRequest.toString());
+	// 	DoOperationsReply operationResponseForCreateOperationSAFRequest = transactionalFunctionControllerHelper.create(tfwRequest, MegaPaymentFacade.FUNCTION);
+	// 	//		System.out.println("Mega controller OPERATION_CREATE RESP.. " + operationResponseForCreateOperationSAFRequest.toString());
+	// 	return operationResponseForCreateOperationSAFRequest;
+	// }
+
+	// @ResolveProtectedEntity(ref = "sourceAccount", type = "ACCOUNT_DEFAULTPAYMENT")
+	// @SuppressWarnings("unchecked")
+	// @RequestMapping(value = MegaPaymentFacade.OPERATION_STOREDRAFT)
+	// @ResponseBody
+	// @ErrorHandler
+	// public DoOperationsReply<TransactionData<TransactionRequest, TransactionReply, TransactionForecast>> storeDraft(@RequestBody final MegaPaymentTFWTransactionRequest tfwRequest) throws BusinessMessageAwareException
+	// {
+	// 	System.out.println("Welcome to controller .. OPERATION_STOREDRAFT" + tfwRequest.toString());
+	// 	DoOperationsReply operationResponseForCreateOperationSAFRequest = transactionalFunctionControllerHelper.storeDraft(tfwRequest, MegaPaymentFacade.FUNCTION);
+	// 	return operationResponseForCreateOperationSAFRequest;
+	// }
+}
+#else
+package pegasus.module.${servicename.toLowerCase()}.controller;
+
+import java.math.BigInteger;
+
+import javax.validation.Valid;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import pegasus.module.${servicename.toLowerCase()}.service.bean.Foo;
+import pegasus.module.${servicename.toLowerCase()}.facade.LmtLogsFacade;
+import pegasus.module.${servicename.toLowerCase()}.facade.bean.PreinitReply;
+import pegasus.module.${servicename.toLowerCase()}.facade.bean.PreinitRequest;
+import pegasus.module.${servicename.toLowerCase()}.facade.bean.PreloadReply;
+import pegasus.module.${servicename.toLowerCase()}.facade.bean.PreloadRequest;
+
+/**
+ * Controller for the ${servicename.toLowerCase()} module.
+ * @author mozes
+ */
+@Controller("${servicename}Controller")
+@RequestMapping(value = "/${servicename.toLowerCase()}/")
+public class ${servicename}Controller
+{
+	//	@Autowired   -- no autowiring is allowed since Blackthe Box (pre) release.
+	private ${servicename}Facade ${servicename.toLowerCase()}Facade;
+
+	/**
+	 * Since Bundle 7.1EQU release (and with the advent of the Bundle 8. "BlackBox"-ed release, only constructor-based injection is allowed.
+	 * Customization is done via the @EnableXXX Spring configuration mechanism.)
+	 * 
+	 * @param ${servicename.toLowerCase()}Facade
+	 */
+	public ${servicename}Controller(${servicename}Facade ${servicename.toLowerCase()}Facade)
+	{
+		if (${servicename.toLowerCase()}Facade == null)
+		{
+			throw new IllegalArgumentException("A valid " + ${servicename}Facade.class.getName() + " @Bean is needed for " + ${servicename}Controller.class.getName());
+		}
+		else
+		{
+			this.${servicename.toLowerCase()}Facade = ${servicename.toLowerCase()}Facade;
+		}
+	}
+
+	@RequestMapping("/preinit")
+	@ResponseBody
+	public PreinitReply preinit(@RequestBody PreinitRequest request)
+	{
+		// Process request...
+		PreinitReply reply = new PreinitReply();
+		// Add some reply data...
+		return reply;
+	}
+	
+	@RequestMapping("/preload")
+	@ResponseBody
+	public PreloadReply preload(@RequestBody PreloadRequest request)
+	{
+		// Process request...
+		PreloadReply reply = new PreloadReply();
+		// Add some reply data...
+		return reply;
+	}
+	
+	@RequestMapping("/foo")
+	@ResponseBody
+	public Foo getFoo()
+	{
+		Foo foo = new Foo();
+		foo.setBar(${servicename.toLowerCase()}Facade.getFoo());
+		return foo;
+	}
+
+}
+
+#end
